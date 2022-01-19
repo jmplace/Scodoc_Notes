@@ -47,7 +47,7 @@
 
 			} else {
 				/* Procédure d'authentification */
-				$this->session = Auth::defaultAuth();
+				$this->session = (string) Auth::defaultAuth();
 				$this->defineStatut();
 			}
 		}

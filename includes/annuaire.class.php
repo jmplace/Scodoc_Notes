@@ -17,7 +17,7 @@
 $path = realpath($_SERVER['DOCUMENT_ROOT'] . '/..');
 include_once "$path/includes/default_config.php";
 
-Annuaire::$STUDENTS_PATH = "$path/data/annuaires/liste_etu.txt";
+Annuaire::$STUDENTS_PATH = "/srv/nip.list"; // "$path/data/annuaires/liste_etu.txt";
 Annuaire::$USERS_PATH = "$path/data/annuaires/utilisateurs.json";
 Annuaire::$STAF_PATH = [
 	$path.'/data/annuaires/liste_ens.txt',
@@ -51,8 +51,8 @@ class Annuaire{
 			$handle = fopen(self::$STUDENTS_PATH, 'r');
 			while(($line = fgets($handle, 1000)) !== FALSE){
 				$data = explode(':', $line);
-				if(rtrim($data[1]) == $mail)
-					return Config::nipModifier($data[0]);
+				if($data[0] == $mail)
+					return Config::nipModifier(rtrim($data[1]));
 			}
 		} else {
 			return Config::nipModifier($mail);
@@ -61,7 +61,7 @@ class Annuaire{
 		exit(
 			json_encode(
 				array(
-					'erreur' => "Votre compte n'est pas encore dans l'annuaire. Si le problème persiste, contactez votre responsable."
+					'erreur' => "Votre compte (".$mail.") n'est pas encore dans l'annuaire. Si le problème persiste, contactez votre responsable."
 				)
 			)
 		);
@@ -87,8 +87,8 @@ class Annuaire{
 		$handle = fopen(self::$STUDENTS_PATH, 'r');
 		while(($line = fgets($handle, 1000)) !== FALSE){
 			$data = explode(':', $line);
-			if(substr($data[0], 1) == substr($num, 1))
-				return rtrim($data[1]);
+			if(substr(rtrim($data[1]), 1) == substr($num, 1))
+				return rtrim($data[0]);
 		}
 	}
 
@@ -143,6 +143,12 @@ class Annuaire{
 
 		On peut donc forcer un statut en plaçant la personne comme admin ou vacataire, sinon par défaut c'est étudiant et enfin personnel.
 		*/
+			/* Test Superadministrateur */
+			if ($user == '5770') {
+				$_SESSION['statut'] = SUPERADMINISTRATEUR;
+				return $_SESSION['statut'];
+			}
+
 			/* Test administrateur */
 			foreach(json_decode(file_get_contents(self::$USERS_PATH)) as $departement => $dep){
 				if(preg_grep($pattern, $dep->administrateurs)){

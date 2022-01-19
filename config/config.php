@@ -4,7 +4,16 @@
 /************************************************/
 	class Config {
 		public static $config_version = '1.0.0';
-
+		/* Sensitif à la case */
+		public static $departements = [
+				'GEA',
+				'GEII',
+				'GMP',
+				'BIO',
+				'MP',
+				'CHI',
+				'INFO'
+			];
 /**********************************/
 /* Activation des modules du site */
 /**********************************/
@@ -20,14 +29,14 @@
 
 			Acutellement les comptes sont gérés par des adresses mail - à voir s'il est nécessaire de configurer l'accès par des nip données par le CAS - me contacter.
 		*/
-		public static $acces_enseignants = false;
+		public static $acces_enseignants = true;
 		public static $afficher_absences = false;	// En dessous du relevé de notes étudiants
 		public static $module_absences = false;		// nécessite l'$acces_enseignants - ce module est différent de celui de Scodoc, il est géré entièrement par la passerelle.
 
 /*********************************/
 /* Données retournées par le CAS */
 /*********************************/
-		public static $CAS_return_type = 'nip';	// Valeurs possibles : 
+		public static $CAS_return_type = 'mail';	// Valeurs possibles :
 													//  - 'nip' : numéro d'étudiant
 													//  - 'idCAS' : un identificant autre (mail, identifiant LDAP ou autres)
 
@@ -48,15 +57,27 @@
 /********************************/
 	/*	Il faut créer compte avec un accès "secrétariat" qui a accès à tous les départements */
 
-		public static $scodoc_url = 'https://iutmscodoc9.uha.fr/ScoDoc';	// Attention, il doit y avoir /Scodoc à la fin	
-		public static $scodoc_login = 'LOGIN_SCODOC';
-		public static $scodoc_psw = 'MDP_SCODOC';
+		public static $scodoc_url = 'https://iut-scodoc.univ-lille.fr/ScoDoc';	// Attention, il doit y avoir /Scodoc à la fin
+		public static $scodoc_login = 'xmlRobot';
+		public static $scodoc_psw = 'HausT1';
 		
-/*******************************************/
-/* Déclaration du domaine DNS de l'UFR pour
-	les mails utilisateurs dans la zone admin
-/*******************************************/
-		public static $DNS = 'uha.fr';
+	/*******************************************/
+	/* Déclaration du domaine DNS de l'UFR pour
+		les mails utilisateurs dans la zone admin
+	/*******************************************/
+		public static $DNS = 'univ-lille.fr';
+
+	/********************************************/
+	/* Class à utiliser pour l'authentification */
+	/* On peut alors utiliser un autre système  */
+	/********************************************/
+		public static $auth_class = 'auth_CAS.class.php';
+
+
+		/********************************/
+		/* Clé pour les jetons JWT      */
+		/********************************/
+		public static $JWT_key = 'uhydfr815steiijdfyt42'; // Laisser vide si on n'utilise pas les jetons JWT
 
 /* __________________________________________________________ */
 /*															  */

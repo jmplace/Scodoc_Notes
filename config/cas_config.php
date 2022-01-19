@@ -3,9 +3,9 @@
 	// Basic Config of the phpCAS client //
 	///////////////////////////////////////
 	// Full Hostname of your CAS Server
-	$cas_host = 'cas.uha.fr';
+	$cas_host = 'cas.univ-lille.fr';
 	// Context of the CAS Server
-	$cas_context = '/cas/';
+	$cas_context = '';
 	// Port of your CAS server. Normally for a https server it's 443
 	$cas_port = 443;
 	// Path to the ca chain that issued the cas server certificate

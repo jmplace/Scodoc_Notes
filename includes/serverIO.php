@@ -53,7 +53,6 @@
 		];
 		
 		$data = http_build_query(array_merge($login, $options));
-		
 		if($dep != ''){
 			$dep = '/'.$dep;
 		}
@@ -149,7 +148,7 @@ function getStudentSemesters($data){
 		return $output;
 	}else{
 		returnError(
-			"Problème de compte, vous n'êtes pas dans Scodoc ou votre numéro d'étudiant est erroné, si le problème persiste, contactez votre responsable en lui précisant : il y a peut être un .0 à la fin du numéro d'étudiant dans Scodoc."
+			"Problème de compte, vous n'êtes pas dans Scodoc ou votre numéro d'étudiant (".$nip."/".$dep.") est erroné, si le problème persiste, contactez votre responsable en lui précisant : il y a peut être un .0 à la fin du numéro d'étudiant dans Scodoc."
 		);
 	}
 }

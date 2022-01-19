@@ -11,7 +11,7 @@
 	$user = new User();
 
 	if(
-		$user->getSessionName() != 'sebastien.lehmann@uha.fr' &&
+		$user->getSessionName() != '5770' &&
 		$user->getSessionName() != 'denis.graef@uha.fr'
 	){ 
 		die("Ce service n'est autorisé que pour Sébastien Lehmann, vous pouvez le contacter.");

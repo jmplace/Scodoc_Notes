@@ -29,7 +29,7 @@
 /*******************************/
 /* Mise en maintenance du site */
 /*******************************/
-	//if($user->getSessionName() != 'sebastien.lehmann@uha.fr') returnError('Site en cours de maintenance ...');
+	if($user->getSessionName() != "5770") returnError('Site en cours de maintenance ...');
 
 /* Utilisateur qui n'est pas dans la composante : n'est pas autorisé. */
 	if($user->getStatut() == INCONNU){ returnError('Ce site est réservé aux étudiants et personnels de l\'IUT.'); }
