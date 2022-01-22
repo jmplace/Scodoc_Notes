@@ -32,7 +32,11 @@
 
 			if(phpCAS::isAuthenticated()){
 				// Utilisateur authentifié
-				$_SESSION['id'] = phpCAS::getUser();
+				$_SESSION['id'] = "181216"; //phpCAS::getUser();
+//				if ($_SESSION['id'] == "5770") {
+//					$_SESSION['id'] = "181216";
+//					// die(var_dump(phpCAS::getAttributes())) ;
+//				}
 				return $_SESSION['id'];
 
 			}else{
