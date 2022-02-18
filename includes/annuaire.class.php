@@ -17,7 +17,7 @@
 $path = realpath($_SERVER['DOCUMENT_ROOT'] . '/..');
 include_once "$path/includes/default_config.php";
 
-Annuaire::$STUDENTS_PATH = "/srv/nip.list"; // "$path/data/annuaires/liste_etu.txt";
+Annuaire::$STUDENTS_PATH = "$path/data/annuaires/liste_etu.txt";
 Annuaire::$USERS_PATH = "$path/data/annuaires/utilisateurs.json";
 Annuaire::$STAF_PATH = [
 	$path.'/data/annuaires/liste_ens.txt',

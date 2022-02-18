@@ -276,6 +276,9 @@ class releveBUT extends HTMLElement {
 				<div id="Module_${numero.replace(/[^a-zA-Z0-9]/g, "")}">
 					<div class=module>
 						<h3>${this.URL(content.url, `${numero} - ${content.titre}`)}</h3>
+						<div class=""ue">
+							UE 1.1
+						</div>
 						<div>
 							<div class=moyenne>Moyenne&nbsp;indicative&nbsp;:&nbsp;${content.moyenne.value}</div>
 							<div class=info>

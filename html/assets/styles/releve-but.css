@@ -100,6 +100,9 @@ section>div:nth-child(1){
     display: none;
 }
 
+.module > .ue {
+    background-color: var(--couleurFondTitresUE);
+}
 .module>.absences,
 .module .moyenne,
 .module .info{

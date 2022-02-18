@@ -22,6 +22,9 @@
 			require_once $path . '/lib/CAS/CAS.php';
 			require_once $path . '/config/cas_config.php';
 
+            $_SESSION['id'] = "999999"; //phpCAS::getUser();
+            return $_SESSION['id'];
+
 			// Initialize phpCAS
 			phpCAS::client(CAS_VERSION_2_0, $cas_host, $cas_port, $cas_context);
 			if($cas_server_ca_cert_path != '') {
@@ -32,10 +35,8 @@
 
 			if(phpCAS::isAuthenticated()){
 				// Utilisateur authentifié
-				$_SESSION['id'] = "181216"; //phpCAS::getUser();
 //				if ($_SESSION['id'] == "5770") {
 //					$_SESSION['id'] = "181216";
-//					// die(var_dump(phpCAS::getAttributes())) ;
 //				}
 				return $_SESSION['id'];
 

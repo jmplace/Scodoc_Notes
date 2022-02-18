@@ -194,7 +194,7 @@
 				// Si c'est un personnel, on transmet l'étudiant par get, sinon on prend l'identifiant de la session.
 				include_once "$path/includes/serverIO.php";
 				$output = getStudentSemesters(							// includes/serverIO.php
-					['id' => $_GET['etudiant'] ?? $user->getSessionName()]
+					['id' => $_GET['etudiant']."cc" ?? $user->getSessionName()]
 				);	
 				break;
 
@@ -239,7 +239,7 @@
 						$nip = Annuaire::getStudentNumberFromMail($user->getSessionName());
 						$dep = getStudentDepartment($nip);				// includes/serverIO.php
 						$semestres = getStudentSemesters([				// includes/serverIO.php
-							'nip' => $nip, 
+							'nip' => $nip,
 							'dep' => $dep
 						]);
 						$output = [
