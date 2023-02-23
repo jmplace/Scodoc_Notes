@@ -8,8 +8,8 @@
 /***********************/
 /* Options d'affichage */
 /***********************/
-		public static $releve_PDF = true; // Affiche ou non l'option pour mettre aux étudiants de télécharger leur relevé au format PDF.
-		public static $nom_IUT = 'IUT'; // Nom de votre IUT, par exemple : 'IUT de Mulhouse'.
+		public static $releve_PDF = false; // Affiche ou non l'option pour mettre aux étudiants de télécharger leur relevé au format PDF.
+		public static $nom_IUT = 'IUT de Lille'; // Nom de votre IUT, par exemple : 'IUT de Mulhouse'.
 		public static $message_non_publication_releve = 'Le responsable de votre formation a décidé de ne pas publier le relevé de notes de ce semestre.'; // Le message à afficher si le relevé n'est pas publié.
 
 /**********************************/
@@ -27,7 +27,7 @@
 
 			Acutellement les comptes sont gérés par des adresses mail - à voir s'il est nécessaire de configurer l'accès par des nip données par le CAS - me contacter.
 		*/
-		public static $acces_enseignants = false;
+		public static $acces_enseignants = true;
 		public static $afficher_absences = false;	// En dessous du relevé de notes étudiants
 		public static $module_absences = false;		// nécessite l'$acces_enseignants - ce module est différent de celui de Scodoc, il est géré entièrement par la passerelle.
 
@@ -45,7 +45,7 @@
 /*********************************/
 /* Données retournées par le CAS */
 /*********************************/
-		public static $CAS_return_type = 'nip';	// Valeurs possibles : 
+		public static $CAS_return_type = 'idCAS';	// Valeurs possibles :
 								//  - 'nip' : numéro d'étudiant
 								//  - 'idCAS' : un identificant autre (mail, identifiant LDAP ou autres)
 
@@ -73,9 +73,9 @@
 /********************************/
 	/*	Il faut créer compte avec un accès "secrétariat" qui a accès à tous les départements */
 
-		public static $scodoc_url = 'https://iutmscodoc9.uha.fr/ScoDoc';	// Attention, il doit y avoir /Scodoc à la fin	
-		public static $scodoc_login = 'LOGIN_SCODOC';
-		public static $scodoc_psw = 'MDP_SCODOC';
+		public static $scodoc_url = 'https://iut-scodoc.univ-lille.fr/ScoDoc';	// Attention, il doit y avoir /Scodoc à la fin
+		public static $scodoc_login = 'xmlRobot';
+		public static $scodoc_psw = 'HausT1';
 		
 /*****************************************************/
 /* Configuration du format des ID et Nom des comptes */ 
@@ -84,7 +84,7 @@
 	/* Contribution de Denis Graef */
 		
 	// Format de l'ID : Adresse mail @uha.fr
-		public static $idReg = '^.+$';				// Exemple pour un mail : '^[a-z0-9_-]+[.][a-z0-9_-]+@uha.fr$'
+		public static $idReg = '^[0-9]+$';				// Exemple pour un mail : '^[a-z0-9_-]+[.][a-z0-9_-]+@uha.fr$'
 		public static $idPlaceHolder = 'Identifiant CAS';	// Place Holder pour saisie de l'ID CAS
 		public static $idInfo = 'Ajoutez l\x27identifiant CAS';	// Message affiché dans l'infobulle - \x27 = unicode de l'apostrophe
 
@@ -98,7 +98,7 @@
 /********************************/
 	// Les jetons JWT peuvent être utilisés pour se faire passer pour n'importe quel utilisateur
 	// C'est également le seul moyen d'avoir le statut superadministrateur
-		public static $JWT_key = ''; // Clé de cryptage JWT : une chaine de caratères aléatoires. Laisser vide si vous n'utilisez pas les jetons
+		public static $JWT_key = 'uhydfr815steiijdfyt42'; // Clé de cryptage JWT : une chaine de caratères aléatoires. Laisser vide si vous n'utilisez pas les jetons
 		
 /********************************************/
 /* Class à utiliser pour l'authentification */
