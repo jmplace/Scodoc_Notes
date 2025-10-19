@@ -456,6 +456,8 @@
 				if(data.relevé.publie == false){
 					if (absence_only(dep)) {
 						document.querySelector(".show_notes").style.display = "none";
+                        document.querySelector("header h1").innerHTML = "Relevé d'absences";
+                        document.querySelector("#notes").innerHTML = "absences";
 					} else {
 						document.querySelector(".releve").innerHTML = "<h2 style='background: #90c;'>" + data.relevé.message + "</h2>";
 					}
