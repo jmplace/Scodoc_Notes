@@ -21,7 +21,7 @@
 			curl_setopt($this->ch, CURLOPT_VERBOSE, 1);
 			curl_setopt($this->ch, CURLOPT_STDERR, $fp);*/
 
-			//$Config->scodoc_url = 'http://192.168.43.67:5000/ScoDoc';
+			$Config->scodoc_url = 'http://192.168.43.67:5000/ScoDoc';
 			/* Configuration pour récupérer le token */ 
 			$options = array(
 				//CURLOPT_HTTPHEADER => array('Expect:'),
@@ -53,8 +53,20 @@
 			global $Config;
 			$data = http_build_query($options);
 			curl_setopt($this->ch, CURLOPT_URL, $Config->scodoc_url . "/api/$url_query?$data");
-		//	var_dump(curl_exec($this->ch));
-			return curl_exec($this->ch);
+
+			// Pour tester d'envoyer des données en POST :
+			//$payload = '[{"date_debut": "2023-11-11T08:00","date_fin": "2022-11-11T10:00","etat": "absent", "desc": "{\"enseignant\": \"Pepette\"}"}]';
+			//$payload = '[{"etat":"VALIDE","date_debut":"2023-08-01T08:00","date_fin":"2023-08-01T18:00"}]';
+			//$payload = '[8714,8722]';	
+			//////////////////////////////////////////////	
+			
+			if(isset($payload)) {
+				curl_setopt( $this->ch, CURLOPT_POSTFIELDS, $payload );
+			}
+
+			$data = curl_exec($this->ch);
+			//print_r(curl_getinfo($this->ch));
+			return $data;
 		}
 	}
 
@@ -75,4 +87,16 @@
 	//echo $Scodoc->Ask_Scodoc('etudiant/nip/22003752/formsemestre/419/bulletin');
 	//echo $Scodoc->Ask_Scodoc('etudiant/nip/22003752/formsemestre/349/bulletin/long/pdf/nosig');
 
-?>
+
+	/*Test API nouvelles absences - Scodoc 9.6+ */
+	//echo $Scodoc->Ask_Scodoc('assiduite/38657');
+	//echo $Scodoc->Ask_Scodoc('assiduite/38659/justificatifs/long');
+	//echo $Scodoc->Ask_Scodoc('justificatif/8754/justifies');
+	//echo $Scodoc->Ask_Scodoc('assiduites/nip/22203129');
+	//echo $Scodoc->Ask_Scodoc('assiduites/etudid/5167/count');
+	//echo $Scodoc->Ask_Scodoc('assiduites/formsemestre/477');
+	//echo $Scodoc->Ask_Scodoc('assiduite/nip/22203129/create');	// Données en POST
+
+	//echo $Scodoc->Ask_Scodoc('justificatif/nip/22203129/create');	// Données en POST
+	//echo $Scodoc->Ask_Scodoc('justificatif/etudid/5167/create');	// Données en POST
+	//echo $Scodoc->Ask_Scodoc('justificatif/delete');	// Données en POST

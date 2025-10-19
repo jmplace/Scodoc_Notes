@@ -11,7 +11,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Justif. absences</title>
     <style>
-        <?php include $_SERVER['DOCUMENT_ROOT']."/assets/header.css"?>
+        <?php include $_SERVER['DOCUMENT_ROOT']."/assets/styles/global.css"?>
         header{
             position: sticky;
             left:0;
@@ -39,22 +39,7 @@
             opacity: initial;
             pointer-events: initial;
         }
-        .message{
-            position: fixed;
-            bottom: 100%;
-            left: 50%;
-            z-index: 1000;
-            padding: 20px;
-            border-radius: 0 0 10px 10px;
-            background: #90c;
-            color: #FFF;
-            font-size: 24px;
-            animation: message 3s;
-            transform: translate(-50%, 0);
-        }
-        @keyframes message{
-            20%, 80%{transform: translate(-50%, 100%)}
-        }
+
         .capitalize{
             text-transform: capitalize;
         }
@@ -62,7 +47,7 @@
 /*   Zones de choix   */
 /**********************/
         .zone{
-            background: #FFF;
+            background: var(--fond-clair);
             padding: 8px;
             margin-bottom: 8px;
             border-radius: 4px;
@@ -72,13 +57,13 @@
 			font-size: 21px;
 			padding: 10px;
 			margin: 5px auto;
-			background: #09c;
-			color: #FFF;
+			background: var(--primaire);
+			color: var(--primaire-contenu);
 			border: none;
 			border-radius: 10px;
             max-width: 100%;
             display: table;
-            box-shadow: 0 2px 2px #888;
+            box-shadow: var(--box-shadow);
 		}
         .highlight{
             animation: pioupiou 0.4s infinite ease-in alternate;
@@ -99,12 +84,12 @@
 			border: 1px solid #CCC;
 			border-radius: 4px;
 			padding: 8px 16px;
-			background: #FFF;
+			background: var(--fond-clair);
 			cursor: pointer;
 		}
 		.contenu>button:hover{
-			background: #0C9;
-			color: #FFF;
+			background: var(--secondaire);
+			color: var(--secondaire-contenu);
 		}
         .flex{
             display: flex;
@@ -112,30 +97,58 @@
             align-items: flex-start;
         }
         .groupes{
-            margin-bottom: 10px;
-			display: flex;
-            justify-content: center;
+			width: fit-content;
+			margin: auto;
+			margin-bottom: 10px;
         }
         .groupe{
             cursor: pointer;
             display: flex;
+			flex-wrap: wrap;
             align-items: center;
             gap: 4px;
             padding: 10px;
             margin: 2px;
-            background: #09C;
-            color: #FFF;
+            background: var(--primaire);
+            color: var(--primaire-contenu);
             border-radius: 8px;
         }
+		.partition {
+			display: flex;
+			align-items: center;
+			justify-content: center;
+		}
+
+		@supports (grid-template-columns: subgrid) {
+			.groupes {
+				display: grid;
+				grid-template-columns: auto auto;
+			}
+			.partition {
+				display: grid;
+				grid-template-columns: subgrid;
+				grid-column: 1 / -1;
+			}
+		}
+
+		.partition>b{
+			margin-right: 16px;
+			text-align: right;
+		}
+		.partition>div{
+			display: flex;
+			flex-wrap: wrap;
+		}
+
         @media screen and (max-width: 1120px){
             .flex{
                 flex-direction: column-reverse;
             }
             .groupes{
-                margin-top: 8px;
-                flex-wrap: wrap;
+				width: calc(100vw - 28px);
+				margin: 0;
+				margin-bottom: 10px;
             }
-
         }
         .selected{
             opacity: 0.5;
@@ -155,8 +168,8 @@
             justify-content: space-between;
             align-items: center;
             font-size: 20px;
-            background: #0C9;
-            color: #FFF;
+            background: var(--secondaire);
+            color: var(--secondaire-contenu);
             border-radius: 10px;
             border: none;
         }
@@ -182,17 +195,17 @@
 		.etudiants>.semaine>div{
 			cursor: initial !important;
 			transition-delay: .035s;
-			border-color: #09c;
+			border-color: var(--primaire);
             width: initial;
 		}
 		.semaine>div:nth-child(1){
 			grid-column: 2;
 		}
 		.etudiants>div:hover:not(.semaine)>div:nth-child(1), .showDay{
-			background: #c09 !important;
-			color: #FFF;
+			background: var(--accent) !important;
+			color: var(--accent-contenu);
 			transition-delay: 0s !important;
-			border-color: #c09 !important;
+			border-color: var(--accent) !important;
 		}
 		.etudiants>div{
 			display: grid;
@@ -201,8 +214,8 @@
 		}
 		.etudiants>div>div{
 			border-radius: 10px;
-            border: 1px solid #eee;
-            background: #FFF; 
+            border: 1px solid var(--gris-estompe);
+            background: var(--fond-clair); 
             cursor: pointer;
 		}
 		.etudiants>div>.dayStudent{
@@ -211,28 +224,28 @@
 			cursor: initial;
 		}
 		.etudiants>div>.dayStudent:hover{
-			border: 1px solid #777;
+			border: 1px solid var(--gris-estompe);
 		}
 		.etudiants>div>.dayStudent>div{
 			position: absolute;
 			top: 0;
 			bottom: 0;
 			border-radius: 10px;
-			border: 1px solid #FFF;
+			border: 1px solid var(--fond-clair);
 		}
 
 		.etudiants>div>.dayStudent>div:not([data-statut=present]){
 			cursor: pointer;
 		}
 		.etudiants>div>.dayStudent>div:not([data-statut=present]):hover{
-			border: 2px solid #0C9;
+			border: 2px solid var(--secondaire);
 		}
 
         .etudiants .btnAbsences{
             position: relative;
             text-align: left;
             padding: 10px 20px;
-			border-color: #09c;
+			border-color: var(--primaire);
             width: initial;
             justify-self: initial;
         }
@@ -255,9 +268,9 @@
 			bottom: 100%;
 			right: 0;
 			pointer-events:none;
-			background: #FFF;
+			background: var(--fond-clair);
 			border-radius: 16px;
-			border: 1px solid #c09;
+			border: 1px solid var(--accent);
 			display: none;
 		}
 		.btnAbsences:hover{
@@ -272,7 +285,7 @@
                 position: sticky;
                 left: 0;
             }
-            .date, .groupes{
+            .date{
                 position: sticky;
                 left: 10px;
                 width: calc(100vw - 28px);
@@ -296,10 +309,15 @@
             background: #f3a027;
         }
 		[data-justifie=true]{
-            background: #0C9;
+            background: var(--secondaire);
         }
+
+		.waitResponse{
+			pointer-events: none;
+			filter: brightness(50%);
+		}
     </style>
-    <meta name=description content="Gestion des absences de l'<?php echo $Config->nom_IUT; ?>">
+    <meta name=description content="Gestion des absences - <?php echo $Config->nom_IUT; ?>">
 </head>
 <body>
     <?php 
@@ -330,7 +348,6 @@
 		</div>
 
         <div class=contenu></div>
-        <div class=wait></div>
         
     </main>
 
@@ -338,6 +355,16 @@
         <!-- Site en maintenance -->
         Authentification en cours ...
     </div>
+
+	<script>
+		/**************************/
+		/* Service Worker pour le message "Installer l'application" et pour le fonctionnement hors ligne PWA
+		/**************************/		
+		if('serviceWorker' in navigator){
+			navigator.serviceWorker.register('../sw.js');
+		}
+	</script>
+	<script src="../assets/js/theme.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx-populate/1.21.0/xlsx-populate.min.js"></script>
     <script>
 		<?php
@@ -353,17 +380,12 @@
         async function checkStatut(){
             let data = await fetchData("donnéesAuthentification");
             session = data.session;
-            document.querySelector(".nom").innerText = data.name;
             let auth = document.querySelector(".auth");
             auth.style.opacity = "0";
             auth.style.pointerEvents = "none";
             statutSession = data.statut;
 
             if(data.statut >= PERSONNEL){
-                document.querySelector("body").classList.add('personnel');
-				if(data.statut >= ADMINISTRATEUR){
-					document.querySelector("#admin").style.display = "inherit";
-				}
                 /* Gestion du storage remettre le même état au retour */
                 let departement = localStorage.getItem("departement");
                 if(departement){
@@ -380,6 +402,7 @@
 /*********************************************/		
         var departement = "";
         var semestre = "";
+		var modules;
         var dataEtudiants;
         var depAdmins = [];
 
@@ -424,6 +447,8 @@
             getStudentsListes();
             /* Gestion du storage remettre le même état au retour */
             localStorage.setItem('semestre', semestre);
+
+			modules = await fetchData(`modules&semestre=${semestre}`);
 		}
 
         async function getStudentsListes(){
@@ -445,16 +470,27 @@
 				<button onclick="createSemesterReport({boursiers:true})">Rapport d'absences boursiers</button>
 			`:"";
 
-            var groupes = "";
-            if(liste.groupes.length > 1){
-                liste.groupes.forEach(groupe=>{
-                    groupes += `<div class=groupe data-groupe="${groupe}" onclick="hideGroupe(this)">${groupe}</div>`;
+			if(config.data_absences_scodoc) {
+				output += "<p>Attention, Scodoc et la passerelle ne gèrent pas les justifications de la même manière :<br><a target=_blank href=../services/messages.php#absencesMultiJours>Plus d'informations</a></p>";
+			}
+
+			var groupesOutput = "";
+			let arrGroupes = Object.entries(liste.groupes);
+            if(arrGroupes[0].length > 1){
+                arrGroupes.forEach(([partition, groupes])=>{
+					groupesOutput += `
+					<div class=partition>
+						<b>${partition}</b>
+						<div>
+							${createGroupes(groupes)}
+						</div>
+					</div>`;
                 })
             }
             output += `
 				<div class=flex>
 					<div>
-						<div class=groupes>${groupes}</div>
+						<div class=groupes>${groupesOutput}</div>
 						<div class=date>
 
 							<svg onclick=changeDate(-1) xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
@@ -471,6 +507,14 @@
 
             return output;
         }
+
+		function createGroupes(groupesArray){
+			let groupes = "";
+			groupesArray.forEach(groupe=>{
+				groupes += `<div class=groupe data-groupe="${groupe}" onclick="hideGroupe(this)">${groupe}</div>`;
+			})
+			return groupes;
+		}
 
         function createStudents(etudiants){
 			let output = `
@@ -494,14 +538,15 @@
 			`;
 
 			etudiants.forEach(etudiant=>{
+				let groupes = etudiant.groupes.join(" / ") || "Groupe1";
 				output += `
 					<div>
-						<div class="btnAbsences ${etudiant.groupe?.replace(/ |\./g, "")}" 
+						<div class="btnAbsences" 
 							data-nom="${etudiant.nom}" 
 							data-prenom="${etudiant.prenom}" 
-							data-groupe="${etudiant.groupe}"
+							data-groupe="${groupes}"
 							data-nip="${etudiant.nip}"
-                            title="${etudiant.groupe} - Télécharger le rapport d'absence de l'étudiant"
+                            title="${groupes} - Télécharger le rapport d'absence de l'étudiant"
                             onclick="createStudentReport(this)">
 								<img src="../services/data.php?q=getStudentPic&nip=${etudiant.nip}" alt="etudiant" width="250" height="350">
 								<div>
@@ -524,32 +569,31 @@
 			document.querySelector(".semaine").children[obj.dataset.day].classList.remove("showDay");
 		}
 
-		function hideGroupe(obj, num){
-			let nbSelected = obj.parentElement.querySelectorAll(".selected").length;
-			let nbBtn = obj.parentElement.children.length;
+		function hideGroupe(obj){
+			let nbSelected = obj.parentElement.parentElement.parentElement.querySelectorAll(".selected").length;
+			let nbBtn = obj.parentElement.parentElement.parentElement.querySelectorAll(".groupe").length;
 			
 			if(nbSelected == 0){
-				Array.from(obj.parentElement.children).forEach(e=>{
+				Array.from(obj.parentElement.parentElement.parentElement.querySelectorAll(".groupe")).forEach(e=>{
 					e.classList.toggle("selected");
 				})
 			}
 			obj.classList.toggle("selected");
 
-			nbSelected = obj.parentElement.querySelectorAll(".selected").length;
+			nbSelected = obj.parentElement.parentElement.parentElement.querySelectorAll(".selected").length;
 			if(nbSelected == nbBtn){
-				Array.from(obj.parentElement.children).forEach(e=>{
+				Array.from(obj.parentElement.parentElement.parentElement.querySelectorAll(".groupe")).forEach(e=>{
 					e.classList.toggle("selected");
 				})
 			}
-
 			
 			let groupesSelected = [];
-			obj.parentElement.querySelectorAll(":not(.selected)").forEach(e=>{
+			obj.parentElement.parentElement.parentElement.querySelectorAll(".groupe:not(.selected)").forEach(e=>{
 				groupesSelected.push(e.dataset.groupe);
 			})
 
 			document.querySelectorAll(".btnAbsences").forEach(e=>{
-				if(groupesSelected.includes(e.dataset.groupe)){
+				if(groupesSelected.some(valeur => e.dataset.groupe.split(" / ").includes(valeur))){
 					e.parentElement.classList.remove("hide")
 				} else {
 					e.parentElement.classList.add("hide")
@@ -614,9 +658,14 @@
 									data-justifie="${absence.justifie}" 
 									data-debut="${absence.debut}"
 									data-fin="${absence.fin}"
+									data-id="${absence.idJustif || ""}"
 									title="${floatToHour(absence.debut)} - ${floatToHour(absence.fin)} - ${absence.enseignant}"
 									onclick="${(absence.statut != "present") ? "justify(this)":""}">
 								</div>`;
+
+							if(config.data_absences_scodoc && ISODate(date) != absence.dateFin) {
+								message("Attention, une absence sur plusieurs jours a été intégrée dans Scodoc, la passerelle ne le gère pas. <a target=_blank href=../services/messages.php#absencesMultiJours>Plus d'informations</a>");
+							}
 						}
 					})
 				}
@@ -627,9 +676,25 @@
 			if(statutSession < ADMINISTRATEUR){
 				return message("Seul un administrateur peut justifier une absence");
 			}
-            if(depAdmins.indexOf(session) == -1 && statutSession < SUPERADMINISTRATEUR){
-              //  return message("Vous ne pouvez pas modifier une absence d'un autre département");
+			let trouve = depAdmins.find( e=>{
+				return e.id == session
+			})
+            if(!trouve && statutSession < SUPERADMINISTRATEUR){
+                return message("Vous ne pouvez pas modifier une absence d'un autre département");
             }
+
+			if(config.data_absences_scodoc && obj.dataset.id.search(',') != -1) {
+				return message("Plusieurs justificatifs Scodoc couvrent cette absence, la passerelle ne le gère pas, utilisez Scodoc pour réaliser les modifications.");
+			}
+
+			if(config.data_absences_scodoc && obj.dataset.id) {
+				let regex = new RegExp(`"idJustif":\\[${obj.dataset.id}\\]`, "g")
+				if(JSON.stringify(dataEtudiants.absences).match(regex).length > 1) {
+					return message("La justification Scodoc couvre plusieurs absences, la passerelle ne le gère pas, utilisez Scodoc pour réaliser les modifications.");
+				}
+			}
+
+			/********************/
 
             if(obj.dataset.justifie == "false"){
 				obj.setAttribute("data-justifie", "true")
@@ -641,12 +706,15 @@
             date.setDate(dateLundi.getDate() + parseInt(obj.parentElement.dataset.day));
             date = ISODate(date);
            
+			obj.classList.add("waitResponse");
             let response = await fetchData("setJustifie" + 
                 "&semestre=" + semestre +
                 "&etudiant=" + obj.parentElement.parentElement.children[0].dataset.nip +
                 "&date=" + date +
                 "&debut=" + obj.dataset.debut +
-                "&justifie=" + obj.dataset.justifie
+                "&fin=" + obj.dataset.fin +
+                "&justifie=" + obj.dataset.justifie +
+                "&id=" + obj.dataset.id
             );
 
             if(response.result != "OK"){
@@ -654,9 +722,14 @@
 				return;
             }
 
+			obj.dataset.id = response.id || "";
+
+			obj.classList.remove("waitResponse");
+
             dataEtudiants.absences[obj.parentElement.parentElement.children[0].dataset.nip][date].forEach(function(e, index, array){
 				if(e.debut == obj.dataset.debut){
 					array[index].justifie = (obj.dataset.justifie == "true") ? true : false;
+					array[index].idJustif = [response.id] || "";
 				}
 			})
         }
@@ -676,10 +749,10 @@
             document.querySelector("body").appendChild(div);
             setTimeout(()=>{
                 div.remove();
-            }, 3000);
+            }, 6000);
         }
 		function floatToHour(heure){
-			return Math.floor(heure) + "h"+ ((heure%1*60 < 10)?"0"+heure%1*60 : heure%1*60)
+			return Math.floor(heure) + "h"+ ((heure%1*60 < 10)?"0"+Math.round(heure%1*60) : Math.round(heure%1*60))
 		}
 /***************************/
 /* Gestion des rapports d'absence
@@ -753,8 +826,8 @@
 						if(data.statut == "absent" && (data.justifie == "false" || data.justifie == false)){
 							sheet.cell("A"+i).value(date.split("-").reverse().join("/"));
 							sheet.cell("B"+i).value(floatToHour(data.debut) + " - " + floatToHour(data.fin));
-							sheet.cell("C"+i).value(mailToTxt(data.enseignant));
-							sheet.cell("D"+i).value(data.matiereComplet);
+							sheet.cell("C"+i).value(data.enseignant);
+							sheet.cell("D"+i).value(getMatiere(data.matiereComplet));
 
 							total += data.fin - data.debut;
 							i++;
@@ -795,8 +868,8 @@
 						if(data.statut == "retard" && (data.justifie == "false" || data.justifie == false)){
 							sheet.cell("A"+i).value(date.split("-").reverse().join("/"));
 							sheet.cell("B"+i).value(floatToHour(data.debut) + " - " + floatToHour(data.fin));
-							sheet.cell("C"+i).value(mailToTxt(data.enseignant));
-							sheet.cell("D"+i).value(data.matiereComplet);
+							sheet.cell("C"+i).value(data.enseignant);
+							sheet.cell("D"+i).value(getMatiere(data.matiereComplet));
 
 							total++;
 							i++;
@@ -837,8 +910,8 @@
 						if(data.statut == "absent" && (data.justifie == "true" || data.justifie == true)){
 							sheet.cell("A"+i).value(date.split("-").reverse().join("/"));
 							sheet.cell("B"+i).value(floatToHour(data.debut) + " - " + floatToHour(data.fin));
-							sheet.cell("C"+i).value(mailToTxt(data.enseignant));
-							sheet.cell("D"+i).value(data.matiereComplet);
+							sheet.cell("C"+i).value(data.enseignant);
+							sheet.cell("D"+i).value(getMatiere(data.matiereComplet));
 
 							total += data.fin - data.debut;
 							i++;
@@ -874,7 +947,8 @@
                 sheet.cell("A1").value("Rapport d'absences").style("fontSize", 18);
                 sheet.cell("A2").value(`${semestreTxt}`).style("fontSize", 24);
                 sheet.cell("A3").value(now);
-                
+
+                /***********/
 				sheet.cell("G4").value("Détail nombre d'heures d'absences");
 				sheet.range("G4:J4").style({
 					bold: true,
@@ -882,7 +956,7 @@
 					fontColor: "FFFFFF"
 				});
 				sheet.cell("A5")
-					.value([["Nom", "Prenom", "Numéro", "H absen.", "Nb retar.", "H justif.", "Septemb.", "Octobre", "Novemb.", "Décemb.", "Janvier", "Février", "Mars", "Avril", "Mai", "Juin", "Juillet", "Aout"]])
+					.value([["Nom", "Prenom", "Numéro", "H absen.", "Nb retar.", "H justif.", "Septemb.", "Octobre", "Novemb.", "Décemb.", "Janvier", "Février", "Mars", "Avril", "Mai", "Juin", "Juillet", "Aout", "Septemb.", "Octobre", "Novemb.", "Décemb.", "Janvier", "Février", "Mars", "Avril", "Mai", "Juin", "Juillet", "Aout"]])
 					.style({
 						bold: true,
 						fill: "0099CC",
@@ -890,16 +964,28 @@
 					});
 				sheet.range("G5:R5").style({fill: "00CC99"});
 
-				//sheet.cell("C6").formula("=A6+B6");
+				/***********/
+
+				sheet.cell("S4").value("Nombre de jours avec au moins une absence");
+				sheet.range("S4:W4").style({
+					bold: true,
+					fill: "0099CC",
+					fontColor: "FFFFFF"
+				});
+
+				sheet.range("S5:AD5").style({fill: "0099CC"});
+
+				/***********/
 				
 				var i = 6;
 
 				var colonne = 'D';
 
-				let totaux = {};
-
 				dataEtudiants.etudiants.forEach(etudiant=>{
 					if( options.boursiers == true && etudiant.boursier != true ){
+						return;
+					}
+					if( document.querySelector(`[data-nip="${etudiant.nip}"]`).parentElement.classList.contains("hide") ) {
 						return;
 					}
 					sheet.cell("A"+i).value([[
@@ -924,6 +1010,21 @@
 						justifie: 0,
 						retard: 0
 					}
+					let totauxJour = {
+						"01": [],
+						"02": [],
+						"03": [],
+						"04": [],
+						"05": [],
+						"06": [],
+						"07": [],
+						"08": [],
+						"09": [],
+						"10": [],
+						"11": [],
+						"12": []
+					};
+
 					Object.entries(dataEtudiants.absences[etudiant.nip] || {}).forEach(([date, liste])=>{
 						liste.forEach(data=>{
 							if(data.statut == "retard" && (data.justifie == "false" || data.justifie == false)){
@@ -934,6 +1035,8 @@
 								let mois = date.split("-")[1];
 								totaux[mois] += data.fin - data.debut;
 								totaux.absent += data.fin - data.debut;
+
+								totauxJour[mois].push(date);
 							}
 						})
 					})
@@ -953,7 +1056,19 @@
 						totaux["05"],
 						totaux["06"],
 						totaux["07"],
-						totaux["08"]
+						totaux["08"],
+						[... new Set(totauxJour["09"])].length,
+						[... new Set(totauxJour["10"])].length,
+						[... new Set(totauxJour["11"])].length,
+						[... new Set(totauxJour["12"])].length,
+						[... new Set(totauxJour["01"])].length,
+						[... new Set(totauxJour["02"])].length,
+						[... new Set(totauxJour["03"])].length,
+						[... new Set(totauxJour["04"])].length,
+						[... new Set(totauxJour["05"])].length,
+						[... new Set(totauxJour["06"])].length,
+						[... new Set(totauxJour["07"])].length,
+						[... new Set(totauxJour["08"])].length
 					]])
 
 					sheet.cell("D"+i).style({
@@ -983,9 +1098,23 @@
 			return String.fromCharCode(char.charCodeAt(0) + nb);
 		}
 
-		function mailToTxt(mail){
+		/*function mailToTxt(mail){
 			let tab = mail.split("@")[0].split(".");
 			return tab[0].charAt(0).toUpperCase() + tab[0].slice(1) + " " + tab[1].toUpperCase();
+		}*/
+
+		function getMatiere(txt) {
+			if(Number.isInteger(txt)) {
+				let matiere = [...modules.modules, ...modules.saes].find(e => {
+					return e.id == txt;
+				});
+				if(!matiere) { 
+					return "";
+				}
+				return matiere.code + ' - ' + matiere.titre;
+			} else {
+				return txt || "-";
+			}
 		}
 
 /***************************/

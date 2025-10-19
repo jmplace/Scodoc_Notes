@@ -5,7 +5,7 @@
 		*	Créé ou modifie le fichier d'absence d'un étudiant
 		*
 		************************************/
-		public static function setAbsence($enseignant, $semestre, $matiere, $matiereComplet, $etudiant, $date, $debut, $fin, $statut){
+		public static function setAbsence($enseignant, $semestre, $matiere, $matiereComplet, $etudiant, $date, $debut, $fin, $statut, $order, $id, $idMatiere){
 			global $path;
 
 			$debut = floatval($debut);
@@ -39,7 +39,7 @@
 				} else { // Date présente
 					
 					$found = false;
-					for($i=0 ; $i<count($json[$date]) ; $i++){	// Pour chaque absence de la date
+					for($i=0 ; $i<count($json[$date] ?? []) ; $i++){	// Pour chaque absence de la date
 
 						if ( $json[$date][$i]['debut'] == $debut // Même créneau
 							&& $json[$date][$i]['fin'] == $fin ) {
@@ -49,7 +49,7 @@
 
 								if($statut == 'unset'){
 									array_splice($json[$date], $i, 1);
-									if(count($json[$date]) == 0){
+									if(count($json[$date] ?? []) == 0){
 										unset($json[$date]);
 									}
 								} else {
@@ -80,7 +80,7 @@
 			}
 
 			
-			if(count($json) == 0){
+			if(count($json ?? []) == 0){
 				unlink($file);
 			}else{
 				file_put_contents(
@@ -109,7 +109,7 @@
 	*
 	*	Retour : 
 	*		[assoc. array] absences d'un étudiant
-	*		[array][assic. array] liste des absences d'un étudiant
+	*		[array][assoc. array] liste des absences d'un étudiant
 	*
 	************************************/
 		public static function getAbsence($semestre, $etudiant = ''){
@@ -144,7 +144,7 @@
 	*	Justification a true ou false
 	*
 	************************************/
-		public static function setJustifie($semestre, $etudiant, $date, $debut, $justifie){
+		public static function setJustifie($semestre, $etudiant, $date, $debut, $fin, $justifie, $id){
 			global $path;
 			$dir = "$path/data/absences/$semestre/";
 			$file = $dir.$etudiant.'.json';
@@ -155,7 +155,7 @@
 
 			$dates = $data[$date];
 
-			for($i=0 ; $i<count($dates) ; $i++){
+			for($i=0 ; $i<count($dates ?? []) ; $i++){
 				if($dates[$i]['debut'] == $debut){
 					$data[$date][$i]['justifie'] = $justifie === 'true';
 					break;
@@ -168,5 +168,14 @@
 			);
 
 			return ['result' => 'OK'];
+		}
+
+	/************************************
+	* getJustify
+	*	Uniquement avec Scodoc
+	*
+	************************************/
+		public static function getJustifs($nip){
+			return ['result' => 'NOK'];
 		}
 	}

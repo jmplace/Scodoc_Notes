@@ -21,9 +21,10 @@
 
 			require_once $path . '/lib/CAS/CAS.php';
 			require_once $path . '/config/cas_config.php';
+			$client_service_name = "https://$_SERVER[HTTP_HOST]";
 
 			// Initialize phpCAS
-			phpCAS::client(CAS_VERSION_2_0, $cas_host, $cas_port, $cas_context);
+			phpCAS::client(CAS_VERSION_2_0, $cas_host, $cas_port, $cas_context, $client_service_name);
 			if($cas_server_ca_cert_path != '') {
 				phpCAS::setCasServerCACert($cas_server_ca_cert_path);
 			} else {
@@ -58,9 +59,10 @@
 
 			require_once $path . '/lib/CAS/CAS.php';
 			require_once $path . '/config/cas_config.php';
+			$client_service_name = "https://$_SERVER[HTTP_HOST]";
 
 			// Initialize phpCAS
-			phpCAS::client(CAS_VERSION_2_0, $cas_host, $cas_port, $cas_context);
+			phpCAS::client(CAS_VERSION_2_0, $cas_host, $cas_port, $cas_context, $client_service_name);
 				
 			if($cas_server_ca_cert_path != '') {
 				phpCAS::setCasServerCACert($cas_server_ca_cert_path);
@@ -69,7 +71,7 @@
 			}
 			phpCAS::forceAuthentication(); 
 
-			$serverName = '://' . strtok($_SERVER['HTTP_HOST'], ':') .'/';
+			$serverName = '://' . strtok($_SERVER['HTTP_HOST'], ':');
 			if( substr_compare( ltrim($_GET['href'], 'https'), $serverName, 0, strlen($serverName)) === 0 ) {	// Vérifier qu'on redifige vers le même domaine
 				header('Location: '. $_GET['href']);
 			} else {
@@ -94,8 +96,9 @@
 			$path = realpath($_SERVER['DOCUMENT_ROOT'] . '/..');
 			require_once $path . '/lib/CAS/CAS.php';
 			require_once $path . '/config/cas_config.php';
+			$client_service_name = "https://$_SERVER[HTTP_HOST]";
 
-			phpCAS::client(CAS_VERSION_2_0, $cas_host, $cas_port, $cas_context);
+			phpCAS::client(CAS_VERSION_2_0, $cas_host, $cas_port, $cas_context, $client_service_name);
 			phpCAS::logoutWithRedirectService('');
 		}
 	}

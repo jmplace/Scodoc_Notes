@@ -29,12 +29,21 @@
 /* Relevé au format PDF */
 /************************/
 	sanitize($_GET["sem_id"]);
+	sanitize($_GET["type"]);
 	$Scodoc = new Scodoc();
+
+	if($Config->liste_dep_publi_PDF != '') {
+		$dep = $Scodoc->getStudentDepartment($nip);
+		if(!in_array($dep, explode(",", $Config->liste_dep_publi_PDF))) {
+			die('Votre département n\'autorise pas de récupérer le relevé au format PDF, vil gredin !');
+		}
+	}
 
 	$result = $Scodoc->getReportCards(
 		$_GET["sem_id"],
 		$nip,
-		'pdf'
+		'pdf',
+		$_GET["type"]
 	);
 
 
@@ -43,5 +52,3 @@
 		header('Content-Disposition:attachment;filename=bulletin.pdf');		
 		echo $result;
 	}
-?>
-

@@ -6,23 +6,25 @@
 	<meta http-equiv="X-UA-Compatible" content="ie=edge">
 	<title>Mises à jour</title>
 	<style>
+		<?php include $_SERVER['DOCUMENT_ROOT']."/assets/styles/global.css"?>
 		body{
 			margin:0;
 			font-family:arial;
-			background: #FAFAFA;
+			color: #000;
+			background: var(--fond-estompe);
 		}
 		h1{
 			position:sticky;
 			margin: 0;
 			top:0;
 			padding:10px;
-			background:#09C;
-			color:#FFF;
-			box-shadow: 0 2px 2px #888;
+			background: var(--primaire);
+			color: var(--primaire-contenu);
+			box-shadow: var(--box-shadow);
 		}
 
 		h2{
-			background: #9C0;
+			background: var(--secondaire);
 			display: table;
 			padding: 10px;
 			color: #FFF;
@@ -50,6 +52,134 @@
 	<h1>Historique des mises à jour</h1>
 
 	<main>
+		<h2>18/08/2025 - 7.0.0</h2>
+		<ul>
+			<li>Compatibilité PHP 8.4 (Debian 13).</li>
+			<li>Option pour connecter plusieurs Scodoc à une unique passerelle (voir <a href="https://github.com/SebL68/Scodoc_Notes?tab=readme-ov-file#une-passerelle-pour-plusieurs-scodoc">readme</a>).</li>
+			<li>Affichage des appréciations - contribution de @Lyanis Souidi (Fontainebleau).</li>
+			<li>Création d'un outil de publipostage, notamment utile pour les poursuites d'études (voir html/services/poursuiteEtudes.html).</li>
+			<li>Amélioration UX du choix des groupes.</li>
+			<li>Fix d'un problème de memory leak lors de l'affichage des statistiques de connexions.</li>
+			<li>Fix ordre des relevés PDF par rapport aux semestres.</li>
+			<li>Fix affichage des absences non BUT.</li>
+			<li>Divers autres correctifs et améliorations.</li>
+		</ul>
+		<h2>09/03/2024 - 6.3.4</h2>
+		<ul>
+			<li>Option permettant de choisir les départements qui publient les relevés PDF.</li>
+			<li>Amélioration des options impliquant la liste des départements : cases à cocher à la place de textes.</li>
+			<li>Histogramme : ajout de labels, amélioration visuelle des colonnes vides.</li>
+			<li>Amélioration du cache agressif.</li>
+		</ul>
+		<h2>27/01/2024 - 6.3.3</h2>
+		<ul>
+			<li>Correctif bug page saisie d'absences : l'affichage d'absences de plusieurs semestres différents faisait planter la page.</li>
+		</ul>
+		<h2>27/01/2024 - 6.3.1</h2>
+		<ul>
+			<li>Option pour autoriser l'affichage des histogrammes (activé par défaut).</li>
+			<li>Limite l'affichage d'un histogramme s'il y a moins de 5 étudiants.</li>
+			<li>Optimisation du responsive de l'histogramme.</li>
+		</ul>
+		<h2>27/01/2024 - 6.3.0</h2>
+		<ul>
+			<li>Relevé de notes : affichage de l'histogramme des notes pour chaque évaluation.</li>
+		</ul>
+		<h2>24/01/2024 - 6.2.5</h2>
+		<ul>
+			<li>Correction bug affichage "undefined" à la place du groupe sur le relevé de notes.</li>
+			<li>Amélioration : affichage de tous les groupes (possibilité de choisir l'ordre et lesquels masquer dans Scodoc).</li>
+			<li>Autres petites améliorations.</li>
+		</ul>
+		<h2>06/01/2024 - 6.2.2</h2>
+		<ul>
+			<li>Métriques absences : utilisation correctif API Scodoc.</li>
+		</ul>
+		<h2>30/12/2023 - 6.2.0</h2>
+		<ul>
+			<li>Système d'envoi des données, une fois par jour, de l'URL du serveur, du numéro de version et des modules activés au serveur de Mulhouse afin de faire une cartographie des usages de la passerelle - activé par défaut, possibilité de le désactiver dans l'onglet "Config->Serveur".</li>
+		</ul>
+		<h2>26/12/2023 - 6.1.0</h2>
+		<ul>
+			<li>Option pour choisir la métrique des totaux d'absences aux étudiants : heures, demi-journées ou journées.</li>
+			<li>Option pour autoriser un étudiant à modifier sa photo sur la passerelle.</li>
+			<li>Option pour un affichage sélectif des absences en fonction des départements - contribution de Jean-Marie Place.</li>			
+			
+			<br>
+			<li>Ajout d'une mise en page pour le fichier createStudentJWT.php</li>
+			<li>Mise à jour des feuilles d'émargement : elles sont désormais neutres sans faire mention des partiels.</li>
+			<li>Les relevés PDF qu'un étudiant peut télécharger sont désormais les relevés courts spéciaux BUT.</li>
+
+			<br>
+			<li>Correctif évitant un envoi multiple de justificatifs.</li>
+			<li>Correctif bug de filtrage avec nom de groupes similaires.</li>
+			<li>Correctif memory leak PHP lors de l'affichage de l'analyse du trafic.</li>
+			
+			<br>
+			<li>Divers autres correctifs et améliorations.</li>
+		</ul>
+		<h2>18/08/2023 - 6.0.0</h2>
+		<ul>
+			<b>Relevé BUT</b>
+			<li>Ajout d'un marqueur pour voir rapidement les nouvelles évaluations - David Ismeurt, étudiant MMI Mulhouse.</li>
+			<li>Amélioration de l'affichage des malus négatifs - Jean-Marie Place, EC université de Lille.</li>
+
+			<br>
+			<b>Absences</b>
+			<li>Option de sauvegarde des données absences dans Scodoc. Nécessite Scodoc 9.6+.</li>
+			<li>Si la sauvegarde dans Scodoc est opérationnelle, option pour activer l'ajout de justificatifs d'absences par l'étudiant.</li>
+			<li>Option pour choisir les départements qui autorisent le dépôt de justificatifs.</li>
+			<li>Saisie des absences par lots (tous absents, tous présents, etc).</li>
+			<li>Rapport d'absences : ajout d'un accumulateur du nombre de jours absents.</li>
+			<li>Personnalisation des messages au début de rapport d'absences et dans la page de dépôt des justificatifs.</li>
+
+			<br>
+			<b>Ajouts</b>
+			<li>Possibilité pour l'admin d'un département, depuis l'onglet "Comptes" d'afficher aux étudiants un message sur la page relevé de notes.</li>
+			<li>Mode jour/nuit - Jordan Abeddou, étudiant MMI Mulhouse.</li>
+			<li>Filtrage multi-partitions des groupes.</li>
+			<li>Récupération et stockage des photos issues de Scodoc. L'étudiant a toujours la possibilité de mettre une photo personnelle qui sera stockée uniquement sur la passerelle. S'il la supprime, c'est de nouveau la photo de Scodoc qui sera utilisée. Nécessite Scodoc 9.6+.</li>
+
+			<br>
+			<b>Onglet config</b>
+			<li>Option pour cloisonner les enseignants : seul un enseignant qui est dans l'onglet "Comptes" aura accès au département dans lequel il est affecté.</li>
+			<li>Ajout de liens vers les outils de la passerelle (diagnostic, analyse du trafic, jetons JWT, nettoyage des photos).</li>
+			<li>Si l'option est activée, les données de trafic sont sauvegardées. Désormais, il est possible de visualiser les graphiques des données. Cette collecte de données est en conformité avec le RGPD.</li>
+			<li>Configuration des données disponibles dans l'onglet "Documents" -> Données étudiants.</li>
+			<li>Option pour autoriser les étudiants à modifier leur photo (uniquement sur la passerelle, pas dans Scodoc).</li>
+			<li>Outil de suppression des photos étudiants qui ne sont plus inscrits dans Scodoc depuis plus d'un an.</li>
+
+			<br>
+			<b>Améliorations</b>
+			<li>Sauvegarde du jeton Scodoc : amélioration des performances.</li>
+			<li>Mise à jour du service worker à partir de toutes les pages : moins de problèmes de cache.</li>
+			<li>Nouveau style de l'animation de chargement.</li>
+
+			<br>
+			<b>Corrections</b>
+			<li>Vérification du statut super administrateur même si le mode enseignant n'est pas activé.</li>
+			<li>Correction du bug qui ne permettait plus de séparer les noms et prénoms lorsqu'on faisait copier/coller des listes étudiants de la page "Documents" vers un tableur.</li>
+			
+			<br>
+			<b>Under the hood</b>
+			<li>Passage de phpCAS 1.4.0 à 1.6.1</li>
+			<li>Correctif de compatibilité PHP 8.2</li>
+			<li>Amélioration du fonctionnement du menu principal.</li>
+			<li>Suppression de la vérification des fichiers annuaires : bascule en mode enseignant simplifié.</li>
+			<br>
+			<li>Divers autres correctifs et améliorations.</li>
+		</ul>
+		<h2>24/02/2023 - 5.1.0</h2>
+		<ul>
+			<li>Menu de configuration en ligne pour les super administrateurs.</li>
+			<li>Diverses améliorations.</li>
+		</ul>
+		<h2>23/02/2023 - 5.0.10</h2>
+		<ul>
+			<li>Configuration dans les requêtes : permet de modifier des options comme le téléchargement des relevés PDF sans avoir à changer la version du site (problématique de cache agressif).</li>
+			<li>Diverses améliorations dans le code.</li>
+		</ul>
+
 		<h2>16/02/2023 - 5.0.9</h2>
 		<ul>
 			<li>Option : public static $CAS_nip_key = 'umCodeEtudiant'; /* Ceci est un exemple */ - Defaut : false - Permet de sélectionner le nip depuis un paramètre complémentaire du CAS, voir /code_test/testCAS.php</li>
@@ -65,7 +195,7 @@
 		</ul>
 		<h2>25/01/2023 - 5.0.7</h2>
 		<ul>
-			<li>Mise en place d'un fichier listant les super admin.</li>
+			<li>Mise en place d'un fichier listant les super-admins.</li>
 			<li>Relevé : ajout rang du parcours sur le relevé.</li>
 			<li>Relevé : ajout des UE capitalisées.</li>
 			<li>Relevé : correctif d'affichage démissionnaires - contribution Emmanuel Viennet - grand manitou.</li>
@@ -136,8 +266,8 @@
 			<b>Absences</b>
 			<li>Refonte du module d'absence :
 				<ul>
-					<li>Pestion par créneaux libres sur la journée.</li>
-					<li>Prise en compte des présences, retard et absences.</li>
+					<li>Gestion par créneaux libres sur la journée.</li>
+					<li>Prise en compte des présences, retards et absences.</li>
 					<li>A venir : création de rapport d'absences par mois.</li>
 				</ul>
 			</li>
@@ -151,8 +281,8 @@
 			<b>Ajouts</b>
 			<li>Ajout d'un système d'analyse du trafic interne à la passerelle : à activer dans config.php - les graphiques d'analyse viendront dans une autre version.</li>
 			<li>Ajout d'un lien pour accéder directement aux relevés de l'étudiant à partir de la fiche étudiant.</li>
-			<li>Ajout d'une méthode dans config pour extraire le nom de l'utilisateur de l'idCAS.<br>
-			Sinon, par défaut : récupération du nom de l'utilisateur avec les info CAS "cn" ou "displayName". Si aucun de fonctionne, affichage de 'Mme, M.'.
+			<li>Ajout d'une méthode dans la config pour extraire le nom de l'utilisateur de l'idCAS.<br>
+			Sinon, par défaut : récupération du nom de l'utilisateur avec les infos CAS "cn" ou "displayName". Si aucun ne fonctionne, affichage de 'Mme, M.'.
 			</li>
 			<li>Ajout du groupe étudiant sur le relevé.</li>
 			<li>Ajout d'une option dans config.php pour personnaliser le message en cas de non diffusion des relevés par Scodoc.</li>
@@ -161,7 +291,7 @@
 			<b>Améliorations</b>
 			<li>Ajout de mbstring dans installOrUpdate.sh</li>
 			<li>Amélioration des audits Lighthouse : accessibilité et SEO.</li>
-			<li>Utilisation de l'année universitaire fourni par Scodoc pour la liste des semestres qu'un étudiant à suivi.</li>
+			<li>Utilisation de l'année universitaire fournie par Scodoc pour la liste des semestres qu'un étudiant a suivis.</li>
 			<li>Affichage de la situation du semestre à la place du code d'admission.</li>
 			<li>Amélioration de l'affichage des décisions semestres / années.</li>
 			<li>Ajout des décisions RCUE semestres pairs.</li>
@@ -194,7 +324,7 @@ rm installOrUpdate.sh
 wget -q https://raw.githubusercontent.com/SebL68/Scodoc_Notes/main/installOrUpdate.sh
 chmod +x installOrUpdate.sh</pre></code>
 		</p>
-		<p><b>⚠️⚠️⚠️ ATTENTION : IL EST NECESSAIRE MODIFIER LE RÔLE et DE LIER LE RÔLE AUX PERMISSIONS DANS SCODOC (si ce n'est pas déjà fait) ⚠️⚠️⚠️</b></p>
+		<p><b>⚠⚠️⚠️ ATTENTION : IL EST NECESSAIRE DE MODIFIER LE RÔLE & DE LIER LE RÔLE AUX PERMISSIONS DANS SCODOC (si ce n'est pas déjà fait) ⚠️⚠️⚠️</b></p>
 		<p><i>==> Ajoutez le rôle LecteurAPI au compte qui se connecte à l'API (pour le moment il faut laisser le rôle Secr car la passerelle utilise en partie l'ancienne API)</i></p>
 		<p>
 			<i>
@@ -223,7 +353,7 @@ flask edit-role -a ScoView LecteurAPI</pre></code>
 			<li>Mise en place des diagnostics Scodoc sur la page 2 :
 				<ul>
 					<li>Essaie de la communication entre le serveur passerelle et Scodoc.</li>
-					<li>Vérification de l'authentification a Scodoc.</li>
+					<li>Vérification de l'authentification à Scodoc.</li>
 					<li>Test de récupération de données => liste des départements.</li>
 				</ul>
 			</li>
@@ -251,7 +381,7 @@ chmod 744 installOrUpdate.sh
 
 			[Option]
 			Par défaut, la mise à jour se fait dans /var/www/. 
-			Le script accepte comme paramètre un chemin différent afin de permettre la mise à jour pour ceux qui ont configurer des Virtual Hosts.
+			Le script accepte comme paramètre un chemin différent afin de permettre la mise à jour pour ceux qui ont configuré des Virtual Hosts.
 			<code>./installOrUpdate.sh cheminVersLaPasserelle</code>
 		</p>
 		<h2>20/04/2022 - V4.7.12</h2>
@@ -264,7 +394,7 @@ chmod 744 installOrUpdate.sh
 		</ul>
 		<h2>17/03/2022 - V4.7.10</h2>
 		<ul>
-			<li>Correction bug : prise en compte du non export des ECTS.</li>
+			<li>Correction bug : prise en compte du non-export des ECTS.</li>
 		</ul>
 		<h2>15/03/2022 - V4.7.9</h2>
 		<ul>
@@ -297,15 +427,15 @@ chmod 744 installOrUpdate.sh
 		</ul>
 		<h2>14/02/2022 - V4.7.3</h2>
 		<ul>
-			<li>Correction bug choix semestre étudiant.</li>
+			<li>Correction bug : choix semestre étudiant.</li>
 		</ul>
 		<h2>03/02/2022 - V4.7.2</h2>
 		<ul>
-			<li>Correction bug téléchargement relevé version PDF.</li>
+			<li>Correction bug : téléchargement relevé version PDF.</li>
 		</ul>
 		<h2>02/02/2022 - V4.7.1</h2>
 		<ul>
-			<li>Ajout des informations identité de l'étudiant sur les relevés DUT.</li>
+			<li>Ajout des informations d'identité de l'étudiant sur les relevés DUT.</li>
 			<li>Amélioration du relevé DUT.</li>
 		</ul>
 		<h2>02/02/2022 - V4.7.0</h2>
@@ -323,7 +453,7 @@ chmod 744 installOrUpdate.sh
 			<li>Relevés BUT : affichage des bonus dans une UE.</li>
 			<li>Relevés BUT : correction de l'affichage des absences : ajout du total semestre des absences.</li>
 			<li>Possibilité de modifier, à partir du fichier config, les photos renvoyées par l'API => function customPic()</li>
-			<li>Possibilité de modifier, à partir du fichier config, les data générés par l'API avant l'envoie => function customOutput()</li>
+			<li>Possibilité de modifier, à partir du fichier config, les datas générées par l'API avant l'envoi => function customOutput()</li>
 			<li>Ajout d'une zone "custom", remplie au choix de chaque IUT, depuis le fichier config => voir function customOutput().</li>
 		</ul>
 		<h2>26/01/2022 - V4.6.5</h2>
@@ -354,19 +484,19 @@ chmod 744 installOrUpdate.sh
 
 		<h2>19/01/2022 - V4.x.x</h2>
 		<ul>
-			<li>Reprise des notes de version dans le fichier de mises à jours.</li>
+			<li>Reprise des notes de version dans le fichier de mises à jour.</li>
 			<li>Refonte complète du système côté serveur : passage du code en POO, réorganisation des fichiers, etc.</li>
 			<li>Mise en place d'un système de gestion des absences.</li>
 			<li>Mise en place d'un système de gestion des comptes.</li>
-			<li>Mise en place d'une communication avec le LDAP pour récupérer statut.</li>
+			<li>Mise en place d'une communication avec le LDAP pour récupérer le statut.</li>
 			<li>Prise en charge automatique des relevés DUT et BUT.</li>
-			<li>Lise en place d'un système de gestion des photos étudiants : l'étudiant gère sa propre photo. Les photos serveur pour les trombinoscopes et les absences.</li>
+			<li>Mise en place d'un système de gestion des photos étudiants : l'étudiant gère sa propre photo. Les photos serveur pour les trombinoscopes et les absences.</li>
 			<li>Mise en place d'un système pour un versionnage du fichier de configuration et d'une configuration par défaut.</li>
 		</ul>
 
 		<h2>04/01/2021 - V3.0.1</h2>
 		<ul>
-			<li class=txt-barre>Création d'un <a target=_blank href="https://notes.iutmulhouse.uha.fr/?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzZXNzaW9uIjoiQ29tcHRlX0RlbW8udGVzdEB1aGEuZnIiLCJzdGF0dXQiOiJldHVkaWFudCJ9.kHuiNx8X2mWUjv1LAHVOdcLGCu2yQS_i6fxqZZICuEA" >compte démo</a></li>
+			<li class=txt-barre>Création d'un <a target=_blank href="https://notes.iutmulhouse.uha.fr/?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzZXNzaW9uIjoiQ29tcHRlX0RlbW8udGVzdEB1aGEuZnIiLCJzdGF0dXQiOiJldHVkaWFudCJ9.kHuiNx8X2mWUjv1LAHVOdcLGCu2yQS_i6fxqZZICuEA" >compte démo - n'est plus fonctionnel</a></li>
 			<li>Mise en ligne du code source sur <a target=_blank href="https://github.com/SebL68/Scodoc_Notes">GitHub</a></li>
 		</ul>
 		<h2>01/01/2020 - V3.0.0</h2>
@@ -385,7 +515,7 @@ chmod 744 installOrUpdate.sh
 				<li>Optimisation des performances : gzip requêtes, réduction du nombre de requêtes envoyées aux services (une à la place de trois) et du serveur à Scodoc.</li>
 				<li>Le site est désormais une PWA complètement valide - fonctionnement hors ligne avec message.</li>
 				<li>Ajout d'un "splash screen" lors de l'authentification.</li>
-				<li>Correction bug double requête au clique sur le semestre.</li>
+				<li>Correction bug double requête au clic sur le semestre.</li>
 				<li>Ajout d'un système de génération automatique des listes étudiantes en fonction de groupes.</li>
 				<li>Génération automatique des fichiers Excel pour les listes d'émargements, les groupes d'étudiants, le retour des notes, les données des étudiants.</li>
 				<li>Ajout de l'identification des vacataires pour le département MMI.</li>
@@ -394,7 +524,7 @@ chmod 744 installOrUpdate.sh
 		<h2>15/10/2020 - V2.1.1</h2>
 		<p>
 			<ul>
-				<li>Amélioration de la détection d'erreurs (ajout du cas où le NIP est erroné et de la non autorisation de l'export des notes dans la configuration du semestre).</li>
+				<li>Amélioration de la détection d'erreurs (ajout du cas où le NIP est erroné et de la non-autorisation de l'export des notes dans la configuration du semestre).</li>
 			</ul>
 		</p>
 
@@ -408,8 +538,8 @@ chmod 744 installOrUpdate.sh
 		<h2>10/09/2020 - V2.0.1</h2>
 		<p>
 			<ul>
-				<li>Correction d'un bug affichant un statut de réussite semi vide pour les étudiants en cours de cursus.</li>
-				<li>Ajout de cette page listant les mises à jours.</li>
+				<li>Correction d'un bug affichant un statut de réussite semi-vide pour les étudiants en cours de cursus.</li>
+				<li>Ajout de cette page listant les mises à jour.</li>
 			</ul>
 		</p>
 
@@ -428,7 +558,7 @@ chmod 744 installOrUpdate.sh
 
 		<h2>01/09/2019 - V1.0.0</h2>
 		<p>
-		Mise en ligne du premier système de récupération de relevés notes :
+		Mise en ligne du premier système de récupération de relevés de notes :
 		<ul>
 				<li>connexion au CAS de l'UHA,</li>
 				<li>lien avec un listing LDAP pour identifier les étudiants à partir de leur mail,</li>
@@ -438,6 +568,7 @@ chmod 744 installOrUpdate.sh
 			</ul>
 		</p>
 	</main>
+	<script src="assets/js/theme.js"></script>
 	<?php 
 		$path = realpath($_SERVER['DOCUMENT_ROOT'] . '/..');
 		include "$path/config/analytics.php";

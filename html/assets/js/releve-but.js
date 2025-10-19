@@ -36,6 +36,43 @@ class releveBUT extends HTMLElement {
 		this.parentElement.parentElement.parentElement.parentElement.querySelector("#Module_" + module).scrollIntoView();
 	}
 
+	afficherHistogramme() {
+		let idEval = this.parentElement.dataset.id;
+		let noteActuelle = parseInt(this.parentElement.dataset.note);
+		fetch("services/data.php?q=listeNotes&eval=" + idEval)
+		.then(r=>r.json())
+		.then(liste=>{
+			let histogramme = document.createElement("div");
+			var graph = "";
+				
+			if(liste[0] == "too low") {
+				var graph = "Pas assez d'étudiant pour afficher les données.";
+			} else {
+				let bucket = new Array(21).fill(0);
+				liste.forEach(note=>{
+					bucket[Math.floor(note)]++;
+				})
+				//bucket[19] += bucket.pop();
+				let bucketMax = Math.max(...bucket);
+
+				bucket.forEach((nb, index)=>{
+					graph += `<div class=histo_max>
+						<div class="histo_visu${(noteActuelle==index)?" focus":""}" style=height:${nb/bucketMax*100}%>
+							<div class=histo_value>${nb || ""}</div>
+							<div class=histo_index>${index}</div>
+						</div>
+					</div>`;
+				})
+			}
+			
+			histogramme.className = "histogramme";
+			histogramme.innerHTML = "<div>" + graph + "</div>";
+			histogramme.addEventListener("click", function(){this.remove()});
+
+			document.body.appendChild(histogramme);
+		})		
+	}
+
 	set setConfig(config) {
 		this.config.showURL = config.showURL ?? this.config.showURL;
 	}
@@ -45,7 +82,7 @@ class releveBUT extends HTMLElement {
 		this.showSemestre(data);
 		this.showSynthese(data);
 		this.showEvaluations(data);
-
+		
 		this.showCustom(data);
 
 		this.setOptions(data.options);
@@ -59,6 +96,9 @@ class releveBUT extends HTMLElement {
 		this.shadow.querySelectorAll(":not(.ueBonus)+.syntheseModule").forEach(e => {
 			e.addEventListener("click", this.goTo)
 		})
+		this.shadow.querySelectorAll(".btn_histogramme").forEach(e => {
+			e.addEventListener("click", this.afficherHistogramme)
+		})
 
 		this.shadow.children[0].classList.add("ready");
 	}
@@ -66,7 +106,6 @@ class releveBUT extends HTMLElement {
 	template() {
 		return `
 <div>	
-	<div class="wait"></div>
 	<main class="releve">
 		<!--------------------------->
 		<!-- Info. étudiant        -->
@@ -109,7 +148,7 @@ class releveBUT extends HTMLElement {
 					<em>La moyenne des ressources dans une UE dépend des poids donnés aux évaluations.</em>
 				</div>
 				<div class=CTA_Liste>
-					Liste <svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+					Liste <svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="var(--contenu-inverse)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
 						<path d="M18 15l-6-6-6 6" />
 					</svg>
 				</div>
@@ -124,7 +163,7 @@ class releveBUT extends HTMLElement {
 			<div>
 				<h2>Ressources</h2>
 				<div class=CTA_Liste>
-					Liste <svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+					Liste <svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="var(--contenu-inverse)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
 						<path d="M18 15l-6-6-6 6" />
 					</svg>
 				</div>
@@ -136,7 +175,7 @@ class releveBUT extends HTMLElement {
 			<div>
 				<h2>SAÉ</h2>
 				<div class=CTA_Liste>
-					Liste <svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+					Liste <svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="var(--contenu-inverse)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
 						<path d="M18 15l-6-6-6 6" />
 					</svg>
 				</div>
@@ -216,7 +255,16 @@ class releveBUT extends HTMLElement {
 		}
 
 
-		this.shadow.querySelector("h2").innerHTML += data.semestre.numero + " - " + data.semestre.groupes[0]?.group_name || "";
+		if(data.semestre.groupes[0]?.group_name) {
+			let groupesTxt = "";
+			data.semestre.groupes.forEach(e=>{
+				groupesTxt += " - " + e.group_name;
+			})
+			this.shadow.querySelector("h2").innerHTML += data.semestre.numero + groupesTxt;
+		} else {
+			this.shadow.querySelector("h2").innerHTML += data.semestre.numero;
+		}
+		
 		this.shadow.querySelector(".dateInscription").innerHTML += this.ISOToDate(data.semestre.inscription);
 		let output = `
 			<div>
@@ -338,8 +386,13 @@ class releveBUT extends HTMLElement {
 								<div class=ue_rang>Rang&nbsp;:&nbsp;${dataUE.moyenne?.rang}&nbsp;/&nbsp;${dataUE.moyenne?.total}</div>
 								<div class=info>`;
 				if(!dataUE.date_capitalisation){		
-					output += `		Bonus&nbsp;:&nbsp;${dataUE.bonus || 0}&nbsp;- 
-									Malus&nbsp;:&nbsp;${dataUE.malus || 0}`;
+					output += `		Bonus&nbsp;:&nbsp;${dataUE.bonus || 0}&nbsp;- `;
+					if(dataUE.malus >= 0) {
+						output += `Malus&nbsp;:&nbsp;${dataUE.malus || 0}`;
+					} else {
+						output += `Bonus&nbsp;complémentaire&nbsp;:&nbsp;${-dataUE.malus || 0}`;
+					}
+									
 				} else {
 					output += `		le ${this.ISOToDate(dataUE.date_capitalisation.split("T")[0])} <a href="${dataUE.bul_orig_url}">dans ce semestre</a>`;
 				}
@@ -407,7 +460,56 @@ class releveBUT extends HTMLElement {
 	showEvaluations(data) {
 		this.shadow.querySelector(".evaluations").innerHTML = this.module(data.ressources);
 		this.shadow.querySelector(".sae").innerHTML += this.module(data.saes);
+
+		const newEvals = this.shadow.querySelectorAll(".new-eval");
+		newEvals.forEach(el => {
+			el.addEventListener("click", () => this.addSeenEvaluation(el));
+		});
 	}
+
+	getSeenEvaluations()
+	{		
+		const seenEvaluations = localStorage.getItem("seenEvaluations");
+		if(seenEvaluations !== null){
+			const seenEvaluationsParsed = JSON.parse(seenEvaluations);
+			if(Array.isArray(seenEvaluationsParsed)){
+				return seenEvaluationsParsed;
+			}
+		}
+		return [];
+	}
+
+	addSeenEvaluation(el)
+	{
+		const seenEvaluations = this.getSeenEvaluations();
+		seenEvaluations.push({
+			id: el.dataset.id,
+			note: el.dataset.note
+		});
+		localStorage.setItem("seenEvaluations", JSON.stringify(seenEvaluations));
+		el.classList.remove("new-eval");
+	}
+
+	removeSeenEvaluation(index){
+		const seenEvaluations = this.getSeenEvaluations();
+		seenEvaluations.splice(index, 1);
+		localStorage.setItem("seenEvaluations", JSON.stringify(seenEvaluations));
+	}
+
+	isNewEvaluation(evaluation)
+	{
+		const seenEvaluations = this.getSeenEvaluations();
+		const index = seenEvaluations.findIndex(e => parseInt(e.id) === evaluation.id);
+		if(index === -1){
+			return true;
+		}
+		if(seenEvaluations[index].note !== evaluation.note.value){
+			this.removeSeenEvaluation(index);
+			return true;
+		}
+		return false;
+	}
+
 	module(module) {
 		let output = "";
 		Object.entries(module).forEach(([numero, content]) => {
@@ -438,13 +540,21 @@ class releveBUT extends HTMLElement {
 	evaluation(evaluations) {
 		let output = "";
 		evaluations.forEach((evaluation) => {
+			const isNewEvaluation = this.isNewEvaluation(evaluation);
 			output += `
-				<div class=eval>
+				<div class="eval ${isNewEvaluation ? "new-eval" : ""}" data-id="${evaluation.id}" data-note="${evaluation.note.value}">
 					<div>${this.URL(evaluation.url, evaluation.description || "Évaluation")}</div>
 					<div>
 						${evaluation.note.value}
 						<em>Coef.&nbsp;${evaluation.coef}</em>
-					</div>
+					</div>`;
+			if(config.histogramme) {
+				output += `
+					<div class="btn_histogramme">
+						<svg pathLength="100" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20v-6M6 20V10M18 20V4"/></svg>
+					</div>`;
+			}
+			output += `
 					<div class=complement>
 						<div>Coef</div><div>${evaluation.coef}</div>
 						<div>Max. promo.</div><div>${evaluation.note.max}</div>
@@ -457,6 +567,7 @@ class releveBUT extends HTMLElement {
 							`;
 			}).join("")}
 					</div>
+					
 				</div>
 			`;
 		})

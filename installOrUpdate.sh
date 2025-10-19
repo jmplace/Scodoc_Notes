@@ -16,7 +16,7 @@ warn() {
     echo -e "${SETCOLOR_WARNING}$*${SETCOLOR_NORMAL}"
 }
 
-INSTALLDIR=/var/www
+INSTALLDIR=/srv/Scodoc_Notes.v11
 
 if [ $# = 1 ]; then 
 	if [ $1 = '-h' ] || [ $1 = '--help' ]; then

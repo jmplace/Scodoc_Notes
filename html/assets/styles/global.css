@@ -1,0 +1,377 @@
+:root {
+	/* Les thèmes présentent des couleurs (primaire, secondaire...) ainsi que des utilités de fond/texte (contenu = texte, fond = background)
+
+	Les utilités peuvent être utilisées en rapport avec les couleurs (ex: var(--primaire-contenu) = couleur du texte sur le fond de couleur primaire)
+	*/
+
+	color-scheme: light;
+
+	/* Thème par défaut (clair) */
+	--text: #000;
+
+	--fond-clair: #fff;
+	--fond: #fafafa;
+	--fond-estompe: #f1f1f1;
+	--fond-inverse: #080808;
+
+	--contenu: #000000;
+	--contenu-inverse: #ffffff;
+
+	--gris: #424242;
+	--gris-estompe: #aaa;
+
+	--primaire: #09c;
+	--primaire-contenu: #fff;
+
+	--secondaire: #00be82;;
+	--secondaire-contenu: #fff;
+
+	--accent: #c09;
+	--accent-contenu: #fff;
+
+	--box-shadow: 0 2px 2px #888;
+
+	--box-shadow-2: 0 2px 2px 2px #ddd;
+	--box-shadow-2-hover: 0 2px 2px 2px #bbb;
+
+	--releve-principale: #f0faff;
+	--releve-fond-titre-ue: #ceffeb;
+	--releve-fond-titre-res: #7daaff;
+	--releve-fond-titre-sae: #ffc828;
+	--releve-secondaire: #fec;
+	--releve-surlignage: #e8ff8478;
+}
+
+.dark {
+	color-scheme: dark;
+
+	/* Thème sombre */
+	--text: #FFF;
+
+	--fond-clair: #000;
+	--fond: #080808;
+	--fond-inverse: #fafafa;
+
+	--contenu: #ffffff;
+	--contenu-inverse: #000000;
+
+	--gris: #e8e6e3;
+	--gris-estompe: #aaa;
+
+	--primaire: #007aa3;
+	--primaire-contenu: #e8e6e3;
+
+	--secondaire: #009868;
+	--secondaire-contenu: #e8e6e3;
+
+	--accent: #a3007a;
+	--accent-contenu: #e8e6e3;
+
+	--box-shadow: 0 2px 2px #5b6367;
+
+	--box-shadow-2: 0 2px 2px 2px #222;
+	--box-shadow-2-hover: 0 2px 2px 2px #444;
+
+	--releve-principale: #000a0f;
+	--releve-fond-titre-ue: #00331f;
+	--releve-fond-titre-res: #002d80;
+	--releve-fond-titre-sae: #002e2e;
+	--releve-secondaire: #332200;
+	--releve-surlignage: #e9ff8578;
+}
+
+/*******************************/
+
+* {
+	box-sizing: border-box;
+}
+
+html {
+	scroll-behavior: smooth;
+}
+
+body {
+	margin: 0;
+	font-family: arial;
+	background: var(--fond);
+	color: var(--text);
+}
+
+header {
+	position: sticky;
+	top: 0;
+	padding: 10px;
+	background: var(--primaire);
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	gap: 16px;
+	color: var(--primaire-contenu);
+	box-shadow: var(--box-shadow);
+	z-index: 100;
+}
+
+header a {
+	color: var(--primaire-contenu);
+	text-decoration: none;
+	padding: 10px 0 10px 0;
+}
+
+header>nav>svg {
+	display: none;
+}
+
+header select{
+    font-size: 16px;
+    padding: 10px;
+	margin: 0 !important;
+    background: var(--accent);
+	color: var(--accent-contenu);
+    border: none;
+    border-radius: 10px;
+    max-width: 100%;
+    box-shadow: var(--box-shadow);
+}
+
+header.selectComposante select {
+	animation: select 0.4s infinite alternate;
+}
+
+@keyframes select {
+	0% {
+		outline: 2px solid #000;
+	}
+
+	100% {
+		outline: 2px solid #fff;
+	}
+}
+
+nav {
+	display: flex;
+	gap: 16px;
+}
+
+.nav {
+	display: none;
+}
+
+.theme {
+	position: absolute;
+	top: 100%;
+	right: 0;
+	width: 48px;
+	height: 20px;
+	margin: 8px;
+	border-radius: 10px;
+	background: #FFF;
+	box-shadow: inset 0 2px 2px #444;
+	cursor: pointer;
+}
+
+.theme>.logo {
+	display: flex;
+	justify-content: space-between;
+	padding: 3px;
+}
+
+.theme>.cercle {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 24px;
+	height: 24px;
+	margin: -2px;
+	border-radius: 100%;
+	background: radial-gradient(farthest-corner at 6px 0px, #09c, #c90);
+	box-shadow: 0 2px 2px #222;
+	transition: 0.2s;
+	transition-timing-function: cubic-bezier(0.67, 1.75, 0.76, 0.92);
+}
+.dark .theme>.cercle {
+	transform: translateX(26px);
+}
+
+.etudiant #notes,
+.personnel #documents,
+.personnel.moduleAbsences #absences,
+.personnel.moduleAbsences #gestion,
+.admin #admin,
+.superadmin #config {
+	background: var(--fond-clair);
+	color: var(--gris);
+	padding: 8px 16px;
+	border-radius: 16px;
+	display: flex;
+	align-items: center;
+}
+
+.personnel .nav:hover,
+.navActif {
+	background: var(--secondaire) !important;
+	color: var(--secondaire-contenu) !important;
+}
+
+h1 {
+	margin: 0 auto 0 0;
+}
+
+@media screen and (max-width: 1280px) {
+	h1 {
+		margin-left: 64px;
+		transition: 0.2s;
+	}
+
+	header>nav>svg {
+		display: block;
+		cursor: pointer;
+		position: absolute;
+		left: 100%;
+		top: 8px;
+		margin-left: 16px;
+	}
+
+	nav {
+		position: fixed;
+		top: 0;
+		left: 0;
+		bottom: 0;
+		background: var(--primaire);
+		flex-direction: column;
+		padding: 16px 32px;
+		transform: translateX(-100%);
+		transition: 0.2s;
+	}
+
+	.ouvert {
+		z-index: 10;
+	}
+
+	.ouvert h1 {
+		color: transparent;
+	}
+
+	.ouvert nav {
+		transform: translateX(0);
+	}
+
+	line {
+		transition: 0.2s;
+		transform-box: fill-box;
+	}
+
+	.ouvert nav svg line:nth-child(1) {
+		transform: translate(0, -3.5px) rotate(45deg);
+	}
+
+	.ouvert nav svg line:nth-child(2) {
+		opacity: 0;
+	}
+
+	.ouvert nav svg line:nth-child(3) {
+		transform: translate(0, 3.5px) rotate(-45deg);
+	}
+}
+
+h2 {
+	margin: 20px 0 0 0;
+	padding: 20px;
+	background: var(--secondaire);
+	color: var(--secondaire-contenu);
+	border-radius: 10px;
+	cursor: pointer;
+}
+
+main {
+	padding: 0 10px;
+	margin-bottom: 64px;
+	max-width: 1000px;
+	margin: auto;
+	margin-bottom: 32px;
+}
+
+.nom {
+	text-transform: capitalize;
+	color: #de2a1c;
+}
+
+.wait {
+	position: absolute;
+	left: 0;
+	right: 0;
+	height: 60px;
+	display: flex;
+	justify-content: center;
+	gap: 8px;
+	transform: translateY(-16px);
+
+	filter: url("#blob");
+}
+.land{
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	height: 16px;
+	background: var(--primaire);
+}
+.dot{
+	width: 16px;
+	height: 16px;
+	border-radius: 100%;
+	animation: wait 0.6s infinite alternate ease-in;
+}
+.dot:nth-child(1) { animation-delay: -0.3s; background: var(--primaire)}
+.dot:nth-child(2) { animation-delay: -0.2s; background: var(--secondaire)}
+.dot:nth-child(3) { animation-delay: -0.1s; background: var(--accent)}
+.dot:nth-child(4) { animation-delay: 0s; background: var(--gris)}
+.dot:nth-child(5) { animation-delay: 0.1s; background: var(--releve-fond-titre-sae)}
+
+@keyframes wait {
+	60% {
+		transform: translateY(0);
+	}
+	100% {
+		transform: translateY(42px);
+	}
+}
+
+.auth {
+	position: fixed;
+	top: 58px;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	background: var(--fond);
+	font-size: 28px;
+	padding: 28px 10px 0 10px;
+	text-align: center;
+	transition: 0.4s;
+	z-index: 100;
+	overflow: auto;
+}
+
+/*********************/
+/* Affichage message */
+/*********************/
+.message {
+	position: fixed;
+	bottom: 100%;
+	left: 50%;
+	z-index: 101;
+	padding: 20px;
+	border-radius: 0 0 10px 10px;
+	background: #ec7068;
+	color: #FFF;
+	font-size: 24px;
+	animation: message 6s;
+	transform: translate(-50%, 0);
+}
+
+@keyframes message {
+
+	10%,
+	90% {
+		transform: translate(-50%, 100%)
+	}
+}

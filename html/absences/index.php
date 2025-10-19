@@ -11,14 +11,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Absences</title>
     <style>
-        <?php include $_SERVER['DOCUMENT_ROOT']."/assets/header.css"?>
-        .admin{
-            background: #FFF;
-            color: #424242;
-            margin-left: auto;
-            padding: 8px 16px;
-            border-radius: 16px;
-        }
+        <?php include $_SERVER['DOCUMENT_ROOT']."/assets/styles/global.css"?>
         main{
             margin: 0 auto 20px auto;
             text-align: center;
@@ -32,22 +25,6 @@
             opacity: initial;
             pointer-events: initial;
         }
-        .message{
-            position: fixed;
-            bottom: 100%;
-            left: 50%;
-            z-index: 1000;
-            padding: 20px;
-            border-radius: 0 0 10px 10px;
-            background: #90c;
-            color: #FFF;
-            font-size: 24px;
-            animation: message 3s;
-            transform: translate(-50%, 0);
-        }
-        @keyframes message{
-            20%, 80%{transform: translate(-50%, 100%)}
-        }
         .capitalize{
             text-transform: capitalize;
         }
@@ -55,7 +32,7 @@
 /*   Zones de choix   */
 /**********************/
         .zone{
-            background: #FFF;
+            background: var(--fond-clair);
             padding: 8px;
             margin-bottom: 8px;
             border-radius: 4px;
@@ -65,13 +42,13 @@
 			font-size: 21px;
 			padding: 10px;
 			margin: 5px auto;
-			background: #09c;
-			color: #FFF;
+			background: var(--primaire);
+			color: var(--primaire-contenu);
 			border: none;
 			border-radius: 10px;
             max-width: 100%;
             display: table;
-            box-shadow: 0 2px 2px #888;
+            box-shadow: var(--box-shadow);
 		}
         .highlight{
             animation: pioupiou 0.4s infinite ease-in alternate;
@@ -88,38 +65,49 @@
 /*******************************/
 /* Listes étudiants */
 /*******************************/
-        .flex{
-            display: flex;
-            justify-content: center;
-            align-items: flex-start;
-        }
-        
-        .groupes{
-            margin-bottom: 10px;
-			display: flex;
-            justify-content: center;
+		.groupes{
+			width: fit-content;
+			margin: auto;
+			margin-bottom: 10px;
         }
         .groupe{
             cursor: pointer;
             display: flex;
+			flex-wrap: wrap;
             align-items: center;
             gap: 4px;
             padding: 10px;
             margin: 2px;
-            background: #09C;
-            color: #FFF;
+            background: var(--primaire);
+            color: var(--primaire-contenu);
             border-radius: 8px;
         }
-        @media screen and (max-width: 700px){
-            .flex{
-                flex-direction: column-reverse;
-                align-items: center;
-            }
-            .groupes{
-                margin-right: 20px;
-                justify-content: center;
-            }
-        }
+		.partition {
+			display: flex;
+			align-items: center;
+			justify-content: center;
+		}
+
+		@supports (grid-template-columns: subgrid) {
+			.groupes {
+				display: grid;
+				grid-template-columns: auto auto;
+			}
+			.partition {
+				display: grid;
+				grid-template-columns: subgrid;
+				grid-column: 1 / -1;
+			}
+		}
+
+		.partition>b{
+			margin-right: 16px;
+			text-align: right;
+		}
+		.partition>div{
+			display: flex;
+			flex-wrap: wrap;
+		}
         .selected{
             opacity: 0.5;
         }
@@ -153,9 +141,10 @@
 			cursor: pointer;
 			transition: 0.06s;
 			transition-timing-function: ease-in;
-			background: #FFF;
+			background: var(--fond-clair);
 			box-shadow: 0 4px 4px rgba(0, 0, 0, 0.25);
 			border-radius: 8px;
+			width: 100%;
 		}
 
 		.date>svg:active {
@@ -168,8 +157,8 @@
 			flex: 1;
 			position: relative;
 			touch-action: none;
-			background: #FFF;
-			box-shadow: 0 4px 4px rgba(0, 0, 0, 0.25);
+			background: var(--fond-clair);
+			box-shadow: var(--box-shadow);
 			border-radius: 8px;
 		}
 
@@ -179,7 +168,7 @@
 			bottom: 0;
 			left: 0;
 			background: rgba(0, 204, 153, 0.5);
-			border: 2px solid #0c9;
+			border: 2px solid var(--secondaire);
 			border-radius: 8px;
 			display: flex;
 			justify-content: center;
@@ -193,7 +182,7 @@
 			bottom: 13px;
 			right: -1px;
 			transform: translateX(50%);
-			background: #0c9;
+			background: var(--secondaire);
 			border-radius: 4px;
 			display: flex;
 			cursor: e-resize;
@@ -202,7 +191,7 @@
 		.timeZone>.slider>.sizer::before {
 			content: "";
 			display: inline-block;
-			background: #FFF;
+			background: var(--secondaire);
 			width: 2px;
 			margin: 6px;
 		}
@@ -218,7 +207,7 @@
 			position: relative;
 			width: 2px;
 			height: 16px;
-			background: #424242;
+			background: var(--gris);
 		}
 		.infoHeures>.small{
 			margin-top: 4px;
@@ -262,11 +251,11 @@
 			margin: 0 auto 16px auto;
 			padding: 16px 32px;
 			border-radius: 8px;
-			box-shadow: 0 2px 2px 2px #ddd;
+			box-shadow: var(--box-shadow-2)
 			cursor: pointer;
 		}
 		.validCreneau:hover{
-			box-shadow: 0 2px 2px 2px #bbb;
+			box-shadow: var(--box-shadow-2-hover);
 		}
 /*****************************/
 /* Liste étudiants */
@@ -283,9 +272,37 @@
 			align-items: center;
             gap:6px;
 			row-gap: 10px;
+			background: var(--fond-clair);
         }
-		.btnAbsences:hover{
+		.btnAbsences:not(.all):hover{
 			background: #ccc;
+		}
+		.btnAbsences.all{
+			font-weight: bold;
+			justify-content: space-between;
+			margin-bottom: 16px;
+			border: 1px solid #CCC;
+			border-radius: 12px 12px 0 0;
+		}
+		.progress{
+			position: absolute;
+			top: 100%;
+			left: 0;
+			right: 0;
+			height: 4px;
+			border-radius: 2px;
+			overflow: hidden;
+			background: #ccc;
+		}
+		.progress::before{
+			content:"";
+			background: var(--secondaire);
+			position: absolute;
+			left: 0;
+			width: calc(100% * var(--nombre) / var(--reference));
+			top: 0;
+			bottom: 0;
+			transition: 0.1s;
 		}
 		.grpBtn{
 			display: flex;
@@ -293,8 +310,8 @@
 		}
 		.btn{
 			border-radius: 10px;
-            box-shadow: 0 2px 2px 2px #ddd;
-			background: #FFF;
+            box-shadow: var(--box-shadow-2);
+			background: var(--fond-clair);
 			cursor: pointer;
 			transition: 0.1s;
 			padding: 4px;
@@ -312,12 +329,12 @@
 		}
 		.miniature>img{
 			pointer-events:none;
-			background: #FFF;
+			background: var(--fond-clair);
 			width: 100%;
 			transition: 0.2s;
 			transform-origin: 0% 100%;
 			border-radius: 8px 0 0 8px;
-			box-shadow: 0 2px 2px 2px #ddd;
+			box-shadow: var(--box-shadow-2);
 		}
 		.miniature:hover>img{
 			transform: translate(38px, -52px) scale( calc(250/38) ) ;
@@ -339,8 +356,8 @@
 			left: 0;
 			right: 0;
 			height: 4px;
-			background: #fff;
-			outline: 1px solid #aaa;
+			background: var(--fond-clair);
+			outline: 1px solid var(--gris-estompe);
 		}
 		.hint>div{
 			position: absolute;
@@ -353,7 +370,7 @@
 			top: calc(100% + 3px);
 			height: 6px;
 			/*background: rgba(0, 204, 153, 0.5);*/
-			outline: 2px solid #0c9;
+			outline: 2px solid var(--secondaire);
 			border-radius: 2px;
 			transition: 0.2s;
 			pointer-events: none;
@@ -402,7 +419,7 @@
             background: #0C9 !important;
         }*/
     </style>
-    <meta name=description content="Gestion des absences de l'<?php echo $Config->nom_IUT; ?>">
+    <meta name=description content="Gestion des absences - <?php echo $Config->nom_IUT; ?>">
 </head>
 <body>
     <?php 
@@ -438,7 +455,6 @@
    
 
         <div class=contenu></div>
-        <div class=wait></div>
         
     </main>
 
@@ -446,6 +462,16 @@
         <!-- Site en maintenance -->
         Authentification en cours ...
     </div>
+	
+	<script>
+		/**************************/
+		/* Service Worker pour le message "Installer l'application" et pour le fonctionnement hors ligne PWA
+		/**************************/		
+		if('serviceWorker' in navigator){
+			navigator.serviceWorker.register('../sw.js');
+		}
+	</script>
+	<script src="../assets/js/theme.js"></script>
     <script>
 		<?php
             include "$path/includes/clientIO.php";
@@ -459,17 +485,12 @@
         async function checkStatut(){
             let data = await fetchData("donnéesAuthentification");
             session = data.session;
-            document.querySelector(".nom").innerText = data.name;
             let auth = document.querySelector(".auth");
             auth.style.opacity = "0";
             auth.style.pointerEvents = "none";
             statutSession = data.statut;
 
             if(data.statut >= PERSONNEL){
-                document.querySelector("body").classList.add('personnel');
-				if(data.statut >= ADMINISTRATEUR){
-					document.querySelector("#admin").style.display = "inherit";
-				}
                 /* Gestion du storage remettre le même état au retour */
                 let departement = localStorage.getItem("departement");
                 if(departement){
@@ -534,12 +555,14 @@
 				let option = document.createElement("option");
 				option.value = module.code;
 				option.innerText = module.code + " - " + module.titre;
+				option.dataset.id = module.id;
 				select.appendChild(option);
             });
 			data.saes?.forEach(module=>{
 				let option = document.createElement("option");
 				option.value = module.code;
 				option.innerText = module.code + " - " + module.titre;
+				option.dataset.id = module.id;
 				select.appendChild(option);
             });
 			
@@ -584,16 +607,20 @@
 				document.querySelector(".etudiants").classList.add("ready");
 			});
 
-			document.querySelectorAll(".btn").forEach(btn=>{ 
+			document.querySelectorAll(".btnAbsences[data-nip] .btn").forEach(btn=>{ 
 				btn.addEventListener("click", setAbsence) 
+			});
+
+			document.querySelectorAll(".btnAbsences.all .btn").forEach(btn=>{ 
+				btn.addEventListener("click", setAllAbsence) 
 			});
 
 			moduleDate = new choixDate(
 				{
-					heureDebut: <?php echo $Config->absence_heureDebut; ?>,
-					heureFin: <?php echo $Config->absence_heureFin; ?>,
-					pas: <?php echo $Config->absence_pas; ?>,
-					dureeSeance: <?php echo $Config->absence_dureeSeance; ?>,
+					heureDebut: config.absence_heureDebut,
+					heureFin: config.absence_heureFin,
+					pas: config.absence_pas,
+					dureeSeance: config.absence_dureeSeance,
 					callback: setDate
 				}
 			);
@@ -611,18 +638,25 @@
         function createSemester(liste){
 			var output = "";
 
-            var groupes = "";
-            if(liste.groupes.length > 1){
-                liste.groupes.forEach(groupe=>{
-                    groupes += `<div class=groupe data-groupe="${groupe}" onclick="hideGroupe(this)">${groupe}</div>`;
+            var groupesOutput = "";
+			let arrGroupes = Object.entries(liste.groupes);
+            if(arrGroupes[0].length > 1){
+                arrGroupes.forEach(([partition, groupes])=>{
+					groupesOutput += `
+					<div class=partition>
+						<b>${partition}</b>
+						<div>
+							${createGroupes(groupes)}
+						</div>
+					</div>`;
                 })
             }
             output += `
-				<div class=groupes>${groupes}</div>
+				<div class=groupes>${groupesOutput}</div>
 				<!-- Module choix date / heure -->
 				<div class="date">
 					<div class="info">Vendredi 04/02/2022</div>
-					<svg class="jourMoins" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#424242"
+					<svg class="jourMoins" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="var(--gris)"
 						stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
 						<path d="M15 18l-6-6 6-6"></path>
 					</svg>
@@ -632,7 +666,7 @@
 							<div class="sliderInfo"></div>
 						</div>
 					</div>
-					<svg class="jourPlus" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#424242"
+					<svg class="jourPlus" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="var(--gris)"
 						stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
 						<path d="M9 18l6-6-6-6"></path>
 					</svg>
@@ -640,23 +674,53 @@
 				</div>
 				<div class="validCreneau">Valider le créneau</div>
 				<!-- / -->
-				<div class=etudiants>${createStudents(liste.etudiants)}</div>
+				
+				<div class=etudiants>
+					<div class="btnAbsences all">
+						Tous les étudiants
+						<div class=grpBtn>
+							<div class=btn data-command=present  title=Présent>
+								<svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="var(--contenu)" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+							</div>
+							<div class=btn data-command=absent title=Absent>
+								<svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="var(--contenu)" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+							</div>
+							<div class=btn data-command=retard title="En retard">
+								<svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="var(--contenu)" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+							</div>
+							<div class=btn data-command=unset title=Annuler>
+								<svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="var(--contenu)" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+							</div>
+						</div>
+						<div class=progress></div>
+					</div>
+					${createStudents(liste.etudiants)}
+				</div>
             `;
 
             return output;
         }
 
+		function createGroupes(groupesArray){
+			let groupes = "";
+			groupesArray.forEach(groupe=>{
+				groupes += `<div class=groupe data-groupe="${groupe}" onclick="hideGroupe(this)">${groupe}</div>`;
+			})
+			return groupes;
+		}
+
         function createStudents(etudiants){
 			var output = "";
            
 			etudiants.forEach(etudiant=>{
+				let groupes = etudiant.groupes.join(" / ") || "Groupe1";
 				output += `
-					<div class="btnAbsences ${etudiant.groupe?.replace(/ |\./g, "") || "Groupe1"}"
+					<div class="btnAbsences"
 						data-nom="${etudiant.nom}" 
 						data-prenom="${etudiant.prenom}" 
-						data-groupe="${etudiant.groupe}"
+						data-groupe="${groupes}"
 						data-nip="${etudiant.nip}"
-						title="${etudiant.groupe}">
+						title="${groupes}">
 
 						<div class="miniature" onclick="event.stopPropagation()">
 							<img src="../services/data.php?q=getStudentPic&nip=${etudiant.nip}">
@@ -671,16 +735,16 @@
 
 						<div class=grpBtn>
 							<div class=btn data-command=present  title=Présent>
-								<svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#0b0b0b" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+								<svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="var(--contenu)" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
 							</div>
 							<div class=btn data-command=absent title=Absent>
-								<svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#0b0b0b" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+								<svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="var(--contenu)" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
 							</div>
 							<div class=btn data-command=retard title="En retard">
-								<svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#0b0b0b" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+								<svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="var(--contenu)" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
 							</div>
 							<div class=btn data-command=unset title=Annuler>
-								<svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#0b0b0b" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+								<svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="var(--contenu)" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line></svg>
 							</div>
 						</div>
         
@@ -691,30 +755,30 @@
 		}
 
 		function hideGroupe(obj){
-			let nbSelected = obj.parentElement.querySelectorAll(".selected").length;
-			let nbBtn = obj.parentElement.children.length;
+			let nbSelected = obj.parentElement.parentElement.parentElement.querySelectorAll(".selected").length;
+			let nbBtn = obj.parentElement.parentElement.parentElement.querySelectorAll(".groupe").length;
 			
 			if(nbSelected == 0){
-				Array.from(obj.parentElement.children).forEach(e=>{
+				Array.from(obj.parentElement.parentElement.parentElement.querySelectorAll(".groupe")).forEach(e=>{
 					e.classList.toggle("selected");
 				})
 			}
 			obj.classList.toggle("selected");
 
-			nbSelected = obj.parentElement.querySelectorAll(".selected").length;
+			nbSelected = obj.parentElement.parentElement.parentElement.querySelectorAll(".selected").length;
 			if(nbSelected == nbBtn){
-				Array.from(obj.parentElement.children).forEach(e=>{
+				Array.from(obj.parentElement.parentElement.parentElement.querySelectorAll(".groupe")).forEach(e=>{
 					e.classList.toggle("selected");
 				})
 			}
 			
 			let groupesSelected = [];
-			obj.parentElement.querySelectorAll(":not(.selected)").forEach(e=>{
+			obj.parentElement.parentElement.parentElement.querySelectorAll(".groupe:not(.selected)").forEach(e=>{
 				groupesSelected.push(e.dataset.groupe);
 			})
 
-			document.querySelectorAll(".btnAbsences").forEach(e=>{
-				if(groupesSelected.includes(e.dataset.groupe)){
+			document.querySelectorAll(".btnAbsences[data-nom]").forEach(e=>{
+				if(groupesSelected.some(valeur => e.dataset.groupe.split(" / ").includes(valeur))){
 					e.classList.remove("hide")
 				} else {
 					e.classList.add("hide")
@@ -852,7 +916,7 @@
 				event.preventDefault();
 			}
 			sliderStopGrab(event) {
-				let numPosi = Math.round(parseInt(this.slider.style.left) / this.pasSize);
+				let numPosi = Math.round(parseInt(this.slider.style.left.match(/[+-]?([0-9]*[.])?[0-9]+/)) / this.pasSize);
 				this.setPosition(numPosi);
 				this.slider.children[1].innerText = "";
 
@@ -933,6 +997,7 @@
         async function setAbsence(){
 			let etudiant = this.parentElement.parentElement;
 
+			/* Verifications */
 			if(	this.dataset.command == "unset" && 
 				(
 					etudiant.dataset.statut == "unset" ||
@@ -943,9 +1008,47 @@
 				return;
 			}
 
+			if(etudiant.dataset.statut == this.dataset.command) {
+				return;
+			}
+
+			let e = document.querySelector(".btnAbsences");
+			e.style.setProperty('--reference', ++reference);
+
+			/* Préparation */
+			let id = "";
+			let order;
+			let absencesJour = dataEtudiants.absences[etudiant.dataset.nip]?.[creneau.date];
+			for(let i=0 ; i<absencesJour?.length || 0 ; i++) {
+				if(absencesJour[i].debut == creneau.debut 
+					&& absencesJour[i].fin == creneau.fin) {
+					id = absencesJour[i].idAbs;
+					break;
+				} else if(absencesJour[i].debut >= creneau.fin
+					|| absencesJour[i].fin <= creneau.debut) {
+					continue;
+				} else {
+					message("Le creneau est à cheval sur une absence.");
+					return;
+				}
+            }
+
+			if(this.dataset.command == "unset") {
+				order = "suppr";
+			} else if(etudiant.dataset.statut == "absent" ||
+				etudiant.dataset.statut == "retard" ||
+				etudiant.dataset.statut == "present"
+			) {
+				order = "modif";
+			} else {
+				order = "ajout"
+			}
+
 			etudiant.dataset.statut = this.dataset.command;
 
-			let reponse = await fetchData("setAbsence" + 
+			/* Envoi */
+			let reponse = await fetchData("setAbsence" +
+				"&departement=" + departement + 
                 "&semestre=" + semestre +
                 "&matiere=" + matiere +
                 "&matiereComplet=" + matiereComplet +
@@ -953,7 +1056,10 @@
                 "&date=" + creneau.date +
                 "&debut=" + creneau.debut +
                 "&fin=" + creneau.fin +
-                "&statut=" + this.dataset.command
+                "&statut=" + this.dataset.command + 
+                "&order=" + order +
+                "&id=" + id +
+                "&idMatiere=" + document.querySelector(`#matiere>[value="${matiere}"]`).dataset.id
             );
 
 			if(reponse.problem) {
@@ -962,7 +1068,9 @@
 				return;
 			}
 
-			////////////// 
+			e.style.setProperty('--nombre', ++nombre);
+
+			/* Modif locale */
 
 			let data = dataEtudiants.absences[etudiant.dataset.nip] ??= {};
 			data = data[creneau.date] ??= [];
@@ -982,6 +1090,7 @@
 				}
 			}
 
+			/* Affichage */
 			if(!found){
 				dataEtudiants.absences[etudiant.dataset.nip][creneau.date][i] = {
 					UE: UE,
@@ -989,7 +1098,10 @@
 					fin: creneau.fin,
 					matiere: matiere,
 					matiereComplet: matiereComplet,
-					statut: this.dataset.command
+					statut: this.dataset.command,
+					dateFin: creneau.date,
+					idAbs: reponse.id,
+					enseignant: "Vous-même"
 				}
 				addHint(
 					etudiant.querySelector(".hint"),
@@ -1034,6 +1146,10 @@
 							absenceJour.enseignant,
 							absenceJour.matiereComplet
 						)
+
+						if(config.data_absences_scodoc && creneau.date != absenceJour.dateFin) {
+							message("Attention, une absence sur plusieurs jours a été intégrée dans Scodoc, la passerelle ne le gère pas. <a target=_blank href=../services/messages.php#absencesMultiJours>Plus d'informations</a>");
+						}
 					}
                 })
             })
@@ -1042,8 +1158,24 @@
 		function addHint(target, debut, fin, statut, enseignant, matiere){
 			let posiDebut = (debut - moduleDate.heureDebut) / (moduleDate.heureFin - moduleDate.heureDebut) * 100;
 			let tailleDuree = (fin - debut) / (moduleDate.heureFin - moduleDate.heureDebut) * 100;
+
+			if(Number.isInteger(matiere)) {
+				matiere = document.querySelector(`[data-id="${matiere}"]`)?.innerText || "Matière d'un autre semestre";
+			}
 					
-			target.innerHTML += `<div style="left:${posiDebut}%;width:${tailleDuree}%" data-statut="${statut}" title="${enseignant} - ${matiere}"></div>`;
+			target.innerHTML += `<div style="left:${posiDebut}%;width:${tailleDuree}%" data-statut="${statut}" title="${enseignant} - ${matiere || "Sans matière"}"></div>`;
+		}
+
+		let reference = 0;
+		let nombre = 0;
+
+		function setAllAbsence() {
+			reference = 0;
+			nombre = 0;
+
+			document.querySelectorAll(`.btnAbsences[data-nom]:not(.hide) .btn[data-command="${this.dataset.command}"]`).forEach(e => {
+				e.click();
+			})
 		}
 
         function message(msg){
@@ -1053,11 +1185,11 @@
             document.querySelector("body").appendChild(div);
             setTimeout(()=>{
                 div.remove();
-            }, 3000);
+            }, 6000);
         }
 
 		function floatToHour(heure){
-			return Math.floor(heure) + "h"+ ((heure%1*60 < 10)?"0"+heure%1*60 : heure%1*60)
+			return Math.floor(heure) + "h"+ ((heure%1*60 < 10)?"0"+Math.round(heure%1*60) : Math.round(heure%1*60))
 		}
 
 /***************************/

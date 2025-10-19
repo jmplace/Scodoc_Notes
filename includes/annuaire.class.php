@@ -17,12 +17,23 @@ $path = realpath($_SERVER['DOCUMENT_ROOT'] . '/..');
 include_once "$path/includes/default_config.php";
 
 Annuaire::$SUPER_ADMIN_PATH = "$path/data/annuaires/super_admin.txt";
-Annuaire::$STUDENTS_PATH = "$path/data/annuaires/liste_etu.txt";
-Annuaire::$USERS_PATH = "$path/data/annuaires/utilisateurs.json";
-Annuaire::$STAF_PATH = [
-	$path.'/data/annuaires/liste_ens.txt',
-	$path.'/data/annuaires/liste_biat.txt'
-];
+
+if(!$Config->multi_scodoc) {
+	Annuaire::$STUDENTS_PATH = "$path/data/annuaires/liste_etu.txt";
+	Annuaire::$USERS_PATH = "$path/data/annuaires/utilisateurs.json";
+	Annuaire::$STAF_PATH = [
+		$path.'/data/annuaires/liste_ens.txt',
+		$path.'/data/annuaires/liste_biat.txt'
+	];
+} else {
+	Annuaire::$STUDENTS_PATH = "$path/data/annuaires/".$_COOKIE['composante']."_liste_etu.txt";
+	Annuaire::$USERS_PATH = "$path/data/annuaires/".$_COOKIE['composante']."_utilisateurs.json";
+	Annuaire::$STAF_PATH = [
+		$path.'/data/annuaires/'.$_COOKIE['composante'].'_liste_ens.txt',
+		$path.'/data/annuaires/'.$_COOKIE['composante'].'_liste_biat.txt'
+	];
+}
+
 
 class Annuaire{
 	static $SUPER_ADMIN_PATH;
@@ -89,7 +100,7 @@ class Annuaire{
 			while(($line = fgets($handle, 1000)) !== FALSE){
 				if($line != ''){
 					$data = explode(':', $line);
-					if(substr($data[0], 1) == substr($num, 1))
+					if(substr($data[0] ?? '', 1) == substr($num ?? '', 1))
 						return rtrim($data[1]);
 				}
 			}
@@ -108,16 +119,10 @@ class Annuaire{
 	*/
 	/****************************************************/
 	public static function statut($user, $justAsk = false){
+		global $Config;
 		if($justAsk || !isset($_SESSION['statut']) || $_SESSION['statut'] == ''){
 			if($user == ""){
 				return INCONNU;
-			}
-			
-			/* Vérification de l'existence des fichiers de listes */
-			self::checkFile(self::$STUDENTS_PATH);
-			self::checkFile(self::$USERS_PATH);
-			foreach(self::$STAF_PATH as $stafPath){
-				self::checkFile($stafPath);
 			}
 
 		/* 
@@ -136,35 +141,45 @@ class Annuaire{
 				}
 			}
 
+			if($Config->acces_enseignants != true){
+				return ETUDIANT;
+			}
+
 			/* Test administrateur */
-			foreach(json_decode(file_get_contents(self::$USERS_PATH)) as $departement => $dep){
-				foreach($dep->administrateurs as $identifiant){
-					if($user == $identifiant->id){
-						return ADMINISTRATEUR;
+			if(file_exists(self::$USERS_PATH)){
+				foreach(json_decode(file_get_contents(self::$USERS_PATH)) as $departement => $dep){
+					foreach($dep->administrateurs as $identifiant){
+						if($user == $identifiant->id){
+							return ADMINISTRATEUR;
+						}
+					}
+				}
+			
+			/* Test vacataire */
+				foreach(json_decode(file_get_contents(self::$USERS_PATH)) as $departement => $dep){
+					foreach($dep->vacataires as $identifiant){
+						if($user == $identifiant->id){
+							return PERSONNEL;
+						}
 					}
 				}
 			}
 			
-			/* Test vacataire */
-			foreach(json_decode(file_get_contents(self::$USERS_PATH)) as $departement => $dep){
-				foreach($dep->vacataires as $identifiant){
-					if($user == $identifiant->id){
-						return PERSONNEL;
-					}
-				}
-			}
-
 			/* Test étudiant */
-			$pattern = '/:'. preg_quote($user) .'\b/i';
-			if(preg_grep($pattern, file(self::$STUDENTS_PATH))){
-				return ETUDIANT;
+			if(file_exists(self::$STUDENTS_PATH)){
+				$pattern = '/:'. preg_quote($user) .'\b/i';
+				if(preg_grep($pattern, file(self::$STUDENTS_PATH))){
+					return ETUDIANT;
+				}
 			}
 
 			/* Test personnel */
 			$pattern = '/\b'. preg_quote($user) .'\b/i';
 			foreach(self::$STAF_PATH as $stafPath){
-				if(preg_grep($pattern, file($stafPath))){
-					return PERSONNEL;
+				if(file_exists($stafPath)){
+					if(preg_grep($pattern, file($stafPath))){
+						return PERSONNEL;
+					}
 				}
 			}
 
@@ -172,14 +187,42 @@ class Annuaire{
 		}
 	}
 
-	private static function setCurrentStatut(){
+	/****************************************************/
+	/* getPersonnelDepartements() 
+		Recherche les départements dans lesquels le personnel est affecté
 
+		Entrée :
+			$user: [string] - 'jean.dupont@uha.fr' // adresse mail de l'utilisateur 
+		
+		Sortie :
+			[array] - ["dep1", "dep2", "dep3"] // liste des départements
+	*/
+	/****************************************************/
+	public static function getPersonnelDepartements($user){
+		$output = [];
+		if(file_exists(self::$USERS_PATH)){
+			foreach(json_decode(file_get_contents(self::$USERS_PATH)) as $departement => $dep){
+				foreach($dep->administrateurs as $identifiant){
+					if($user == $identifiant->id){
+						$output[] = $departement;
+					}
+				}
+				if(isset($dep->vacataires)) {
+					foreach($dep->vacataires as $identifiant){
+						if($user == $identifiant->id){
+							$output[] = $departement;
+						}
+					}
+				}
+				
+			}
+		}
+		return $output;
 	}
 
 	/****************************************************/
 	/* checkFile() 
 		Vérifie l'existance du fichier liste passé en paramètre
-
 		Entrée :
 			$file : [string] - Nom du fichier 
 		

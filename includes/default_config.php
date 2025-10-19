@@ -14,16 +14,38 @@
 		);
 	}
 
+/***********************************/	
+/* Config modifiée par l'interface */
+/***********************************/
+
+	if((Config::$multi_scodoc ?? false) && isset($_COOKIE['composante'])) {
+		$file = $path.'/config/config'.$_COOKIE['composante'].'.json';
+	} else {
+		$file = $path.'/config/config.json';
+	}
+
+	$configJSON = [];
+
+	if(file_exists($file)){
+		$configJSON = json_decode(file_get_contents($file), true);
+	}
+
+/***********************************/
+
 	$Config = new stdClass();
 
-		$Config->passerelle_version = '5:0:9';
+		$Config->passerelle_version = '7:0:2';
 
 /***********************/
 /* Options d'affichage */
 /***********************/
-		$Config->releve_PDF = Config::$releve_PDF ?? true; // Affichage de l'option pour que les étudiants puissent télécharger leur relevé en version PDF.
-		$Config->nom_IUT = Config::$nom_IUT ?? 'IUT'; // Nom de l'IUT, par exemple : 'IUT de Mulhouse'.
-		$Config->message_non_publication_releve = Config::$message_non_publication_releve ?? 'Le responsable de votre formation a décidé de ne pas publier le relevé de notes de ce semestre.'; // Message si le relevé n'est pas publié.
+		$Config->releve_PDF = $configJSON['releve_PDF'] ?? Config::$releve_PDF ?? true; // Affichage de l'option pour que les étudiants puissent télécharger leur relevé en version PDF.
+		$Config->liste_dep_publi_PDF = $configJSON['liste_dep_publi_PDF'] ?? Config::$liste_dep_publi_PDF ?? ''; // Liste des départements autorisant la publication des PDF - tous si vide.
+		$Config->liste_dep_affichage_appreciations = $configJSON['liste_dep_affichage_appreciations'] ?? Config::$liste_dep_affichage_appreciations ?? ''; // Liste des départements autorisant l'affichage des appréciations.
+
+		$Config->etudiant_modif_photo = $configJSON['etudiant_modif_photo'] ?? Config::$etudiant_modif_photo ?? true; // Autoriser les étudiants à modifier leur photo.
+		$Config->nom_IUT = $configJSON['nom_IUT'] ?? Config::$nom_IUT ?? 'IUT'; // Nom de l'IUT, par exemple : 'IUT de Mulhouse'.
+		$Config->message_non_publication_releve = $configJSON['message_non_publication_releve'] ?? Config::$message_non_publication_releve ?? 'Le responsable de votre formation a décidé de ne pas publier le relevé de notes de ce semestre.'; // Message si le relevé n'est pas publié.
 
 
 /**********************************/
@@ -38,13 +60,27 @@
 			Cet accès nécessite de maintenir à jour les listes d'utilisateurs dans les fichiers /data/annuaires - le but étant de différencier un étudiant d'un enseignant.
 			Ces listes peuvent être générées automatiquement avec LDAP - voir la suite de la configuration.
 			Il est également possible d'ajouter les utilisateurs en tant que "vacataire" dans le menu "Comptes" du site sans passer par LDAP.
-
-			Acutellement les comptes sont gérés par des adresses mail - à voir s'il est nécessaire de configurer l'accès par des nip données par le CAS - me contacter.
 		*/
-		$Config->afficher_releves = Config::$afficher_releves ?? true;		// Permet d'utiliser la passerelle uniquement pour les absences en standalone
-		$Config->acces_enseignants = Config::$acces_enseignants ?? false;
-		$Config->afficher_absences = Config::$afficher_absences ?? false;	// En dessous du relevé de notes étudiants
-		$Config->module_absences = Config::$module_absences ?? false;		// nécessite l'acces_enseignants - ce module est différent de celui de Scodoc, il est géré entièrement par la passerelle.
+		// PAS IMPLEMENTÉ $Config->afficher_releves = Config::$afficher_releves ?? true;		// Permet d'utiliser la passerelle uniquement pour les absences en standalone
+		$Config->acces_enseignants = $configJSON['acces_enseignants'] ?? Config::$acces_enseignants ?? false;
+
+		$Config->histogramme = $configJSON['histogramme'] ?? Config::$histogramme ?? true; // Proposer aux étudiants de voir l'histrogramme des notes de la promotion pour les évaluation.
+		
+		$Config->afficher_absences = $configJSON['afficher_absences'] ?? Config::$afficher_absences ?? false;	// En dessous du relevé de notes étudiants
+		$Config->module_absences = $configJSON['module_absences'] ?? Config::$module_absences ?? false;		// nécessite l'acces_enseignants - ce module est différent de celui de Scodoc, il est géré entièrement par la passerelle.
+		$Config->data_absences_scodoc = $configJSON['data_absences_scodoc'] ?? Config::$data_absences_scodoc ?? false;	// Choisir si les absences sont stockées sur la passerelle ou dans Scodoc.
+		$Config->metrique_absences = $configJSON['metrique_absences'] ?? Config::$metrique_absences ?? 'passerelle';	// Choisir le type de métrique pour l'affichage des totaux absences aux étudiants.
+		$Config->autoriser_justificatifs = $configJSON['autoriser_justificatifs'] ?? Config::$autoriser_justificatifs ?? false;	// Choisir si les étudiants peuvent déposer des justificatifs d'absences qui seront importés dans Scodoc.
+		$Config->liste_dep_ok_justificatifs = $configJSON['liste_dep_ok_justificatifs'] ?? Config::$liste_dep_ok_justificatifs ?? '';	// Liste des départements autorisant les justificatifs
+		$Config->liste_dep_publi_absences = $configJSON['liste_dep_publi_absences'] ?? Config::$liste_dep_publi_absences ?? '';	// Liste des départements autorisant les justificatifs
+		$Config->message_rapport_absences = $configJSON['message_rapport_absences'] ?? Config::$message_rapport_absences ?? "Les causes de l’absence doivent être notifiées par écrit à l'aide d'un justificatif dans les 48 heures à compter du début de l’absence au secrétariat du département. Voir règlement intérieur pour les motifs légitimes d'absence.";	//Message au début du rapport d'absences, après le relevé de notes.
+		$Config->message_justificatifs = $configJSON['message_justificatifs'] ?? Config::$message_justificatifs ?? "";	// Message à ajouter dans la page justificatifs.
+
+		$Config->cloisonner_enseignants = $configJSON['cloisonner_enseignants'] ?? Config::$cloisonner_enseignants ?? false; // Permettre a un enseignant d'avoir accès à tous les départements ou que ceux dans lesquels il intervient (onglet Comptes).
+		
+		$Config->doc_afficher_nip = $configJSON['doc_afficher_nip'] ?? Config::$doc_afficher_nip ?? true; // Permet d'avoir la data num étudiant dans Documents -> Données étudiants
+		$Config->doc_afficher_id = $configJSON['doc_afficher_id'] ?? Config::$doc_afficher_id ?? true; // Permet d'avoir la data identifiant dans Documents -> Données étudiants
+		$Config->doc_afficher_date_naissance = $configJSON['doc_afficher_date_naissance'] ?? Config::$doc_afficher_date_naissance ?? true; // Permet d'avoir la data date de naissance dans Documents -> Données étudiants
 
 /*********************/
 /* Analyse du trafic */
@@ -55,7 +91,10 @@
 		Il peut dans une certains mesure remplacer un système de type Google Analytics ou Matomo.
 		Si vous souhaitez utiliser un autre système, vous pouvez compléter le fichier analytics.php 
 	*/
-		$Config->analystics_interne = Config::$analystics_interne ?? false;
+		$Config->analystics_interne = $configJSON['analystics_interne'] ?? Config::$analystics_interne ?? false;
+		$Config->analyse_temps_requetes = $configJSON['analyse_temps_requetes'] ?? Config::$analyse_temps_requetes ?? false;	// Temps requêtes avec Scodoc - enregistré dans /data/analytics/temps.csv
+
+		$Config->envoi_donnees_version = $configJSON['envoi_donnees_version'] ?? Config::$envoi_donnees_version ?? true; // Autorise l'envoi de l'URL du serveur, du numéro de version et des modules activés au serveur de Mulhouse afin de faire une cartographie des usages de la passerelle.
 
 /*********************************/
 /* Données retournées par le CAS */
@@ -94,12 +133,20 @@
 /********************************/
 /* Accès à Scodoc               */
 /********************************/
-	/*	Il faut créer compte avec un accès "secrétariat" qui a accès à tous les départements */
 
-		$Config->scodoc_url = Config::$scodoc_url;	// ⚠️⚠️⚠️ Attention, il doit y avoir /Scodoc à la fin	
-		$Config->scodoc_login = Config::$scodoc_login;
-		$Config->scodoc_psw = Config::$scodoc_psw;
+		$Config->multi_scodoc = Config::$multi_scodoc ?? false; // Si vous avez plusieurs instances de Scodoc à relier sur une passerelle.
+		$Config->scodoc_instances = Config::$scodoc_instances ?? [];
 
+		if(!$Config->multi_scodoc || !isset($_COOKIE['composante'])) {
+			$Config->scodoc_url = Config::$scodoc_url;
+			$Config->scodoc_login = Config::$scodoc_login;
+			$Config->scodoc_psw = Config::$scodoc_psw;
+		} else {
+			$Config->scodoc_url = $Config->scodoc_instances[$_COOKIE['composante']]['url'];
+			$Config->scodoc_login = $Config->scodoc_instances[$_COOKIE['composante']]['login'];
+			$Config->scodoc_psw = $Config->scodoc_instances[$_COOKIE['composante']]['psw'];
+		}
+		
 /********************************************/
 /* OU accès à un autre système de données   */
 /********************************************/
@@ -111,12 +158,12 @@
 /*********************************************/
 	/* Contribution de Denis Graef */
 
-		$Config->idReg = Config::$idReg ?? '^.+$';										// On accepte tous les ID CAS
-		$Config->idPlaceHolder = Config::$idPlaceHolder ?? 'Identifiant CAS';			// Place Holder pour saisie de l'ID CAS
-		$Config->idInfo = Config::$idInfo ?? 'Ajoutez l\x27identifiant CAS';			// Infobulle pour saisie de l'ID CAS (\x27 = unicode de l'apostrophe)
-		$Config->nameReg = Config::$nameReg ?? '^.+$';									// On accepte tous les Noms
-		$Config->namePlaceHolder = Config::$namePlaceHolder ?? 'Nom utilisateur';		// Place Holder pour saisie du Nom de l'utilisateur
-		$Config->nameInfo = Config::$nameInfo ?? 'Indiquez le nom';						// Infobulle pour saisie du Nom de l'utilisateur
+		$Config->idReg = $configJSON['idReg'] ?? Config::$idReg ?? '^.+$';										// On accepte tous les ID CAS
+		$Config->idPlaceHolder = $configJSON['idPlaceHolder'] ?? Config::$idPlaceHolder ?? 'Identifiant CAS';			// Place Holder pour saisie de l'ID CAS
+		$Config->idInfo = $configJSON['idInfo'] ?? Config::$idInfo ?? 'Ajoutez l\'identifiant CAS';			// Infobulle pour saisie de l'ID CAS
+		$Config->nameReg = $configJSON['nameReg'] ?? Config::$nameReg ?? '^.+$';									// On accepte tous les Noms
+		$Config->namePlaceHolder = $configJSON['namePlaceHolder'] ?? Config::$namePlaceHolder ?? 'Nom utilisateur';		// Place Holder pour saisie du Nom de l'utilisateur
+		$Config->nameInfo = $configJSON['nameInfo'] ?? Config::$nameInfo ?? 'Indiquez le nom';						// Infobulle pour saisie du Nom de l'utilisateur
 				
 /********************************/
 /* Clé pour les jetons JWT      */
@@ -173,6 +220,9 @@
 	// Filtre LDAP BIATSS (edupersonaffiliation)
 		$Config->LDAP_filtre_biatss = Config::$LDAP_filtre_biatss ?? '';
 
+	// Si plusieurs instances Scodoc, alors plusieurs instances LDAP
+		$Config->LDAP_instances = Config::$LDAP_instances ?? [];
+
 	/**********************************************************/
 	/* Class à utiliser pour gérer la planification de tâches */
 	/* On peut aussi utiliser un autre système                */
@@ -197,14 +247,15 @@
 /* Configuration du serveur */
 /****************************/
 		$Config->PHP_cmd = Config::$PHP_cmd ?? '/usr/bin/php';
+		$Config->url_proxy = Config::$url_proxy ?? ''; // Si un proxy est installé et que l'envoi des données vers Mulhouse ne fonctionne pas
 	
 /**************************************************/
 /* Gestion des absences - si le module est activé */
 /**************************************************/
-		$Config->absence_heureDebut = Config::$absence_heureDebut ?? 8;
-		$Config->absence_heureFin = Config::$absence_heureFin ?? 20;
-		$Config->absence_pas = Config::$absence_pas ?? 0.5;
-		$Config->absence_dureeSeance = Config::$absence_dureeSeance ?? 2;
+		$Config->absence_heureDebut = $configJSON['absence_heureDebut'] ?? Config::$absence_heureDebut ?? 8;
+		$Config->absence_heureFin = $configJSON['absence_heureFin'] ?? Config::$absence_heureFin ?? 20;
+		$Config->absence_pas = $configJSON['absence_pas'] ?? Config::$absence_pas ?? 0.5;
+		$Config->absence_dureeSeance = $configJSON['absence_dureeSeance'] ?? Config::$absence_dureeSeance ?? 2;
 
 /***************************************/
 /* Déclaration des constantes globales */
@@ -220,3 +271,103 @@
 	foreach($CONSTANTES as $const => $val) {
 		define($const, $val);
 	}
+
+/*******************************/
+/* Methodes de config          */
+/*******************************/
+$accepted_input = [
+	'passerelle_version',
+	'multi_scodoc',
+
+	'histogramme',
+	'message_non_publication_releve',
+	'releve_PDF',
+	'liste_dep_publi_PDF',
+	'liste_dep_affichage_appreciations',
+	'etudiant_modif_photo',
+	'acces_enseignants',
+	'cloisonner_enseignants',
+	'analystics_interne',
+	'envoi_donnees_version',
+	'analyse_temps_requetes',
+	'nom_IUT',
+
+	'doc_afficher_nip',
+	'doc_afficher_id',
+	'doc_afficher_date_naissance',
+
+	'idReg',
+	'idPlaceHolder',
+	'idInfo',
+	'nameReg',
+	'namePlaceHolder',
+	'nameInfo',
+
+	'module_absences',
+	'afficher_absences',
+	'data_absences_scodoc',
+	'metrique_absences',
+	'autoriser_justificatifs',
+	'liste_dep_ok_justificatifs',
+	'liste_dep_publi_absences',
+	'message_rapport_absences',
+	'message_justificatifs',
+	'absence_heureDebut',
+	'absence_heureFin',
+	'absence_pas',
+	'absence_dureeSeance'
+];
+
+$Config->getAllConfig = function() {
+	global $Config;
+	global $accepted_input;
+	$output = [];
+	foreach ($accepted_input as $key) {
+		$output[$key] = ((array)$Config)[$key];
+	}
+	return $output;
+};
+
+$Config->getConfig = function() {
+	global $Config;
+	global $user;
+
+	$output = ($Config->getAllConfig)();
+	$output['session'] 	= $user->getId();
+	$output['name' ]	= $user->getName();
+	$output['statut' ]	= $user->getStatut();
+	
+	return $output;
+};
+
+$Config->setConfig = function($key, $value) {
+	global $path;
+	global $file;
+	global $accepted_input;
+	
+	if(!in_array($key, $accepted_input)) {
+		returnError("Option non modifiable");
+	}
+
+	$configJSON = [];
+
+	if(file_exists($file)){
+		$configJSON = json_decode(file_get_contents($file), true);
+	}
+
+	switch(true){
+		case $value === 'true': $configJSON[$key] = true; break;
+		case $value === 'false': $configJSON[$key] = false; break;
+		case is_numeric($value): $configJSON[$key] = floatval($value); break;
+		case $value === '': unset($configJSON[$key]); break;
+		default: $configJSON[$key] = $value;
+	}
+
+	if(file_put_contents(
+			$file, 
+			json_encode($configJSON)
+		) === false
+	) {
+		returnError("Fichier non enregistré - problème de droits ? - le dossier config doit appartenir à www-data.");
+	}
+};

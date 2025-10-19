@@ -11,7 +11,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Documents</title>
     <style>
-        <?php include $_SERVER['DOCUMENT_ROOT']."/assets/header.css"?>
+        <?php include $_SERVER['DOCUMENT_ROOT']."/assets/styles/global.css"?>
         main{
             margin: 0 auto 20px auto;
         }
@@ -19,23 +19,23 @@
 /*   Zones de choix   */
 /**********************/
         .zone{
-            background: #FFF;
+            background: var(--fond-clair);
             padding: 8px;
             margin-bottom: 8px;
             border-radius: 4px;
-            border: 1px solid #CCC;
+            border: 1px solid var(--gris-estompe);
         }
 		select{
 			font-size: 21px;
 			padding: 10px;
 			margin: 5px auto;
-			background: #09c;
-			color: #FFF;
+			background: var(--primaire);
+			color: var(--primaire-contenu);
 			border: none;
 			border-radius: 10px;
             max-width: 100%;
             display: table;
-            box-shadow: 0 2px 2px #888;
+            box-shadow: var(--box-shadow);
 		}
         .highlight{
             animation: pioupiou 0.4s infinite ease-in alternate;
@@ -62,23 +62,46 @@
             border-collapse: collapse;
         }
         .groupes{
-            margin-left: 20px;
-            margin-bottom: 10px;
-			display: flex;
+			margin: 0px 4px 4px 20px;
         }
-        .groupe{
+		.groupe{
             cursor: pointer;
             display: flex;
+			flex-wrap: wrap;
             align-items: center;
             gap: 4px;
             padding: 10px;
             margin: 2px;
-            background: #09C;
-            color: #FFF;
+            background: var(--primaire);
+            color: var(--primaire-contenu);
             border-radius: 8px;
         }
+		.partition {
+			display: flex;
+			align-items: center;
+		}
+		.partition>b{
+			margin-right: 16px;
+			text-align: right;
+		}
+		.partition>div{
+			display: flex;
+			flex-wrap: wrap;
+		}
+		@supports (grid-template-columns: subgrid) {
+			.groupes {
+				display: grid;
+				grid-template-columns: auto 1fr;
+			}
+			.partition {
+				display: grid;
+				grid-template-columns: subgrid;
+				grid-column: 1 / -1;
+			}
+		}
         .petit{
             flex-direction: column;
+			transition: 0.2s;
         }
         .petit>div{
             font-size: 8px;
@@ -87,10 +110,6 @@
             .flex{
                 flex-direction: column-reverse;
                 align-items: center;
-            }
-            .groupes{
-                margin-right: 20px;
-                justify-content: center;
             }
         }
         .selected{
@@ -105,13 +124,16 @@
         }
 		.etudiants>a{
 			text-decoration: none;
+			color: var(--contenu);
+			display: flex;
+			padding: 2px 4px;
+		}
+		.etudiants>*:nth-child(odd){
+			background: #e0e0e0;
 			color: #000;
-			display: block;
 		}
-		.etudiants>a:nth-child(odd){
-			background: #eee;
-		}
-        .etudiants>a:before{
+        .etudiants>a:before, 
+		.etudiants>table[data-nom]:before{
             counter-increment: cpt;
             content: counter(cpt) " - " attr(data-groupe);
 			display: inline-block;
@@ -122,6 +144,18 @@
             overflow: hidden;
             margin-right: 10px;
         }
+		body:not(.switchTable) .etudiants>table[data-nom]{
+			display: none;
+		}
+		.etudiants>table{
+			display: block;
+		}
+		body.switchTable .etudiants>a{
+			display: none;
+		}
+		body:not(.switchTable) .petit{
+			filter: brightness(50%);
+		}
 		.load path{
 			animation: chargement 0.4s infinite linear;
 		}
@@ -130,7 +164,7 @@
             100%{stroke-dasharray: 25;stroke-dashoffset:100;}
         }
     </style>
-    <meta name=description content="Interface documents de l'<?php echo $Config->nom_IUT; ?>">
+    <meta name=description content="Interface documents - <?php echo $Config->nom_IUT; ?>">
 </head>
 <body>		
     <?php 
@@ -141,7 +175,7 @@
         <p>
             Bonjour <span class=nom></span>.
         </p>
-        <div class="groupe petit" style=margin-top:6px onclick=concat(this)>
+        <div class="groupe petit" style=margin-top:6px onclick=concat()>
             Séparer nom / prénom
             <div>Pour copier-coller directement de la liste</div>
         </div>
@@ -159,7 +193,6 @@
             </select>
         </div>
         <div class=contenu></div>
-        <div class=wait></div>
         
     </main>
 
@@ -167,6 +200,15 @@
         <!-- Site en maintenance -->
         Authentification en cours ...
     </div>
+	<script>
+		/**************************/
+		/* Service Worker pour le message "Installer l'application" et pour le fonctionnement hors ligne PWA
+		/**************************/		
+		if('serviceWorker' in navigator){
+			navigator.serviceWorker.register('../sw.js');
+		}
+	</script>
+	<script src="../assets/js/theme.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx-populate/1.21.0/xlsx-populate.min.js"></script>
     <script>
         checkStatut();
@@ -179,16 +221,11 @@
 /*********************************************/			
         async function checkStatut(){
             let data = await fetchData("donnéesAuthentification");
-            document.querySelector(".nom").innerText = data.name;
             let auth = document.querySelector(".auth");
             auth.style.opacity = "0";
             auth.style.pointerEvents = "none";
 
             if(data.statut >= PERSONNEL){
-                document.querySelector("body").classList.add('personnel');
-				if(data.statut >= ADMINISTRATEUR){
-					document.querySelector("#admin").style.display = "inherit";
-				}
                 let departement = localStorage.getItem("departement");
                 if(departement){
                     document.querySelector("#departement").value = departement;
@@ -198,7 +235,6 @@
                 document.querySelector(".contenu").innerHTML = "Ce contenu est uniquement accessible pour les personnels de l'IUT. ";
             }
         }
-
 
         async function selectDepartment(departement){
             document.querySelector("#departement").classList.remove("highlight");
@@ -225,38 +261,45 @@
 			var output = "";
 
 			data.forEach(semestre=>{
-                var groupes = "";
-                if(semestre.groupes.length > 1){
-                    semestre.groupes.forEach(groupe=>{
-                        groupes += `<div class=groupe data-groupe="${groupe}" onclick="hideGroupe(this)">${groupe}</div>`;
-                    })
-                }
+				var groupesOutput = "";
+				let arrGroupes = Object.entries(semestre.groupes);
+				if(arrGroupes[0].length > 1){
+					arrGroupes.forEach(([partition, groupes])=>{
+						groupesOutput += `
+						<div class=partition>
+							<b>${partition}</b>
+							<div>
+								${createGroupes(groupes)}
+							</div>
+						</div>`;
+					})
+				}
 				output += `
                     <h2 onclick="hideSemester(this)">${semestre.titre}</h2>
                     <div class="flex hide">
                         <div>
-                            <div class="groupes">${groupes}</div>
+                            <div class="groupes">${groupesOutput}</div>
                             <div class="etudiants">${createStudents(semestre.etudiants)}</div>
                         </div>
 						<div>
 							<div class=groupe onclick="processTrombi(this)">
-							<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="1.5" stroke-linecap="round"><path pathLenght="100" d="M18 14v5a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8c0-1.1.9-2 2-2h5M15 3h6v6M10 14L20.2 3.8"/></svg>
+							<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--contenu-inverse)" stroke-width="1.5" stroke-linecap="round"><path pathLenght="100" d="M18 14v5a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8c0-1.1.9-2 2-2h5M15 3h6v6M10 14L20.2 3.8"/></svg>
 								Trombinoscope
 							</div>
 							<div class=groupe onclick="processSigning(this)">
-								<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="1.5" stroke-linecap="round"><path pathLenght="100" d="M3 15v4c0 1.1.9 2 2 2h14a2 2 0 0 0 2-2v-4M17 9l-5 5-5-5M12 12.8V2.5"/></svg>
+								<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--contenu-inverse)" stroke-width="1.5" stroke-linecap="round"><path pathLenght="100" d="M3 15v4c0 1.1.9 2 2 2h14a2 2 0 0 0 2-2v-4M17 9l-5 5-5-5M12 12.8V2.5"/></svg>
 								Feuille d'émargement
 							</div>
 							<div class=groupe onclick="processGroups(this)">
-								<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="1.5" stroke-linecap="round"><path pathLenght="100" d="M3 15v4c0 1.1.9 2 2 2h14a2 2 0 0 0 2-2v-4M17 9l-5 5-5-5M12 12.8V2.5"/></svg>
+								<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--contenu-inverse)" stroke-width="1.5" stroke-linecap="round"><path pathLenght="100" d="M3 15v4c0 1.1.9 2 2 2h14a2 2 0 0 0 2-2v-4M17 9l-5 5-5-5M12 12.8V2.5"/></svg>
 								Groupes étudiants
 							</div>
                             <div class=groupe onclick="processNotes(this)">
-								<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="1.5" stroke-linecap="round"><path pathLenght="100" d="M3 15v4c0 1.1.9 2 2 2h14a2 2 0 0 0 2-2v-4M17 9l-5 5-5-5M12 12.8V2.5"/></svg>
+								<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--contenu-inverse)" stroke-width="1.5" stroke-linecap="round"><path pathLenght="100" d="M3 15v4c0 1.1.9 2 2 2h14a2 2 0 0 0 2-2v-4M17 9l-5 5-5-5M12 12.8V2.5"/></svg>
 								Retours notes
 							</div>
                             <div class=groupe onclick="processStudentsData(this)">
-								<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="1.5" stroke-linecap="round"><path pathLenght="100" d="M3 15v4c0 1.1.9 2 2 2h14a2 2 0 0 0 2-2v-4M17 9l-5 5-5-5M12 12.8V2.5"/></svg>
+								<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--contenu-inverse)" stroke-width="1.5" stroke-linecap="round"><path pathLenght="100" d="M3 15v4c0 1.1.9 2 2 2h14a2 2 0 0 0 2-2v-4M17 9l-5 5-5-5M12 12.8V2.5"/></svg>
 								Données étudiants
 							</div>
 						</div>
@@ -266,19 +309,36 @@
             return output;
         }
 
+		function createGroupes(groupesArray){
+			let groupes = "";
+			groupesArray.forEach(groupe=>{
+				groupes += `<div class=groupe data-groupe="${groupe}" onclick="hideGroupe(this)">${groupe}</div>`;
+			})
+			return groupes;
+		}
+
         function createStudents(etudiant){
 			var output = "";
            
 			etudiant.forEach(etudiant=>{
+				let groupes = etudiant.groupes.join(" / ") || "Groupe1";
 				output += `
 					<a href="/?ask_student=${etudiant.nip}"
                         data-nom="${etudiant.nom}" 
                         data-prenom="${etudiant.prenom}" 
-                        data-groupe="${etudiant.groupe}"
+                        data-groupe="${groupes}"
                         data-num="${etudiant.nip}"
                         data-idcas="${etudiant.idcas}"
-						data-datenaissance="${etudiant.date_naissance?.split("-").reverse().join("/") || "Non défini"}"><table><td>${etudiant.nom}</td> <td>${etudiant.prenom}</td></table>
-                    </a>
+						data-datenaissance="${etudiant.date_naissance?.split("-").reverse().join("/") || "Non défini"}">${etudiant.nom} ${etudiant.prenom}
+                    </a><table></table>
+					<table
+                        data-nom="${etudiant.nom}" 
+                        data-prenom="${etudiant.prenom}" 
+                        data-groupe="${groupes}"
+                        data-num="${etudiant.nip}"
+                        data-idcas="${etudiant.idcas}"
+						data-datenaissance="${etudiant.date_naissance?.split("-").reverse().join("/") || "Non défini"}"><td>${etudiant.nom}</td> <td>${etudiant.prenom}</td>
+					</table>
 				`;
 			})
 			return output;
@@ -287,47 +347,41 @@
         function hideSemester(obj){
             obj.nextElementSibling.classList.toggle("hide");
         }
+
 		function hideGroupe(obj){
-			let nbSelected = obj.parentElement.querySelectorAll(".selected").length;
-			let nbBtn = obj.parentElement.children.length;
+			let nbSelected = obj.parentElement.parentElement.parentElement.querySelectorAll(".selected").length;
+			let nbBtn = obj.parentElement.parentElement.parentElement.querySelectorAll(".groupe").length;
 			
 			if(nbSelected == 0){
-				Array.from(obj.parentElement.children).forEach(e=>{
+				Array.from(obj.parentElement.parentElement.parentElement.querySelectorAll(".groupe")).forEach(e=>{
 					e.classList.toggle("selected");
 				})
 			}
 			obj.classList.toggle("selected");
 
-			nbSelected = obj.parentElement.querySelectorAll(".selected").length;
+			nbSelected = obj.parentElement.parentElement.parentElement.querySelectorAll(".selected").length;
 			if(nbSelected == nbBtn){
-				Array.from(obj.parentElement.children).forEach(e=>{
+				Array.from(obj.parentElement.parentElement.parentElement.querySelectorAll(".groupe")).forEach(e=>{
 					e.classList.toggle("selected");
 				})
 			}
 			
 			let groupesSelected = [];
-			obj.parentElement.querySelectorAll(":not(.selected)").forEach(e=>{
+			obj.parentElement.parentElement.parentElement.querySelectorAll(".groupe:not(.selected)").forEach(e=>{
 				groupesSelected.push(e.dataset.groupe);
 			})
 
-			Array.from(obj.parentElement.nextElementSibling.children).forEach(e=>{
-				if(groupesSelected.includes(e.dataset.groupe)){
+			Array.from(obj.parentElement.parentElement.parentElement.nextElementSibling.querySelectorAll("[data-groupe]")).forEach(e=>{
+				if(groupesSelected.some(valeur => e.dataset.groupe.split(" / ").includes(valeur))){
 					e.classList.remove("hide")
 				} else {
 					e.classList.add("hide")
 				}	
 			})
         }
-        function concat(obj){
-            if(obj.classList.toggle("selected")){
-                document.querySelectorAll(".etudiants>a").forEach(function(e){
-                    e.innerHTML = `${e.dataset.nom} ${e.dataset.prenom}`;
-                })
-            }else{
-                document.querySelectorAll(".etudiants>a").forEach(function(e){
-                    e.innerHTML = `<table><td>${e.dataset.nom}</td> <td>${e.dataset.prenom}</td></table>`;
-                })
-            }
+
+        function concat(){
+			document.body.classList.toggle("switchTable");
         }
         
 /*********************************************/
@@ -373,7 +427,6 @@
 				etudiants: etudiants
 			}
 
-			console.log(output);
 			localStorage.setItem("trombi", JSON.stringify(output));
 			window.open("trombi.php");
 		}
@@ -407,7 +460,7 @@
 			XlsxPopulate.fromBlankAsync()
             .then(workbook => {
                 var h2 = obj.parentElement.parentElement.previousElementSibling;
-                var groupes = [...h2.nextElementSibling.querySelectorAll(".groupes>.groupe:not(.selected)")].map(function(e) { return e.innerText; })
+                var groupes = [...h2.nextElementSibling.querySelectorAll(".groupes .groupe:not(.selected)")].map(function(e) { return e.innerText; })
                 const sheet = workbook.sheet(0);
                 sheet.name("Groupes");
                 sheet.cell("A1").value(h2.innerText).style("fontSize", 24);
@@ -421,8 +474,7 @@
                         fontSize: 16
                     });
                     var line = 4;
-                    h2.nextElementSibling.querySelectorAll(`.etudiants [data-groupe="${groupe}"`).forEach(etudiant=>{
-
+                    h2.nextElementSibling.querySelectorAll(`.etudiants a[data-groupe*="${groupe}"`).forEach(etudiant=>{
                         sheet.cell(String.fromCharCode(column) + line).value(etudiant.dataset.nom + " " + etudiant.dataset.prenom);
                         line++;
                     });
@@ -499,9 +551,10 @@
                 sheet.cell("B5").value("Nom").style("bold", true);
                 sheet.cell("C5").value("Prénom").style("bold", true);
                 sheet.cell("D5").value("Groupe").style("bold", true);
-                sheet.cell("E5").value("Num étudiant").style("bold", true);
-                sheet.cell("F5").value("Identifiant").style("bold", true);
-                sheet.cell("G5").value("Date de naissance").style("bold", true);
+
+				if(config.doc_afficher_nip) sheet.cell("E5").value("Num étudiant").style("bold", true);
+                if(config.doc_afficher_id) sheet.cell("F5").value("Identifiant").style("bold", true);
+                if(config.doc_afficher_date_naissance) sheet.cell("G5").value("Date de naissance").style("bold", true);
 
                 var i = 6;
                 h2.nextElementSibling.querySelectorAll(".etudiants>a:not(.hide)").forEach(etudiant=>{
@@ -509,9 +562,9 @@
                     sheet.cell("B"+i).value(etudiant.dataset.nom);
                     sheet.cell("C"+i).value(etudiant.dataset.prenom);
                     sheet.cell("D"+i).value(etudiant.dataset.groupe);
-                    sheet.cell("E"+i).value(etudiant.dataset.num);
-                    sheet.cell("F"+i).value(etudiant.dataset.idcas);
-                    sheet.cell("G"+i).value(etudiant.dataset.datenaissance);
+					if(config.doc_afficher_nip) sheet.cell("E"+i).value(etudiant.dataset.num);
+                    if(config.doc_afficher_id)sheet.cell("F"+i).value(etudiant.dataset.idcas);
+					if(config.doc_afficher_date_naissance) sheet.cell("G"+i).value(etudiant.dataset.datenaissance);
                     i++;
                 });
 
