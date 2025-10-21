@@ -456,6 +456,8 @@
 				if(data.relevé.publie == false){
 					if (absence_only(dep)) {
 						document.querySelector(".show_notes").style.display = "none";
+                        document.querySelector("header h1").innerHTML = "Relevé d'absences";
+                        document.querySelector("#notes").innerHTML = "absences";
 					} else {
 						document.querySelector(".releve").innerHTML = "<h2 style='background: #90c;'>" + data.relevé.message + "</h2>";
 					}
@@ -576,10 +578,15 @@
 							} else {
 								var outputDate = date.split("-").reverse().join("/");
 							}
+                            if (absence.nomMatiere != '') {
+                                nom = absence.nomMatiere;
+                            } else {
+                                nom = getMatiere(data, absence.matiereComplet);
+                            }
 							output = `
 								<div>${outputDate}</div> 
 								<div>${floatToHour(absence.debut)} - ${floatToHour(absence.fin)}</div>
-								<div>${getMatiere(data, absence.matiereComplet)}</div>
+								<div>${nom}</div>
 								<div class=enseignant>${absence.enseignant.split('@')[0].split(".").join(" ")}</div>
 								<div class="${(absence.justifie === true || absence.justifie === "true" ) ? "justifie" : absence.statut}"></div>
 							` + output;

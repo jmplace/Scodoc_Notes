@@ -107,20 +107,54 @@
 		}
  		
 	*/
+        private static function addMatieres($Scodoc, $data) {
+            $moduleImplDict = array();
+            foreach($data as $day) {
+                foreach($day as $absence) {
+                    $moduleImpl_id = $absence["matiereComplet"];
+                    if (is_numeric($moduleImpl_id)) {
+                        if (! array_key_exists($moduleImpl_id, $moduleImplDict)) {
+//                            $nom = $Scodoc->getMatiere($moduleImpl_id);
+                            $nom ="Nom module";
+                            $moduleImplDict[$moduleImpl_id] = $nom;
+                        }
+                    }
+                }
+            }
+            return $moduleImplDict;
+        }
+
 		public static function getAbsence($semestre, $etudiant = ''){
 			$Scodoc = new Scodoc();
 			if($etudiant == '') {
 				// On récupère les absences de tous les étudiants du semestre
 				$data = $Scodoc->getSemesterAbsences($semestre);
-				return Absences::scoAbsDataToPasserelle($data, true);
+                $data = Absences::scoAbsDataToPasserelle($data, true);
+//                Absences::addMatieres($Scodoc, $data);
+                return $data;
 			} else {
 				// Sinon les absences d'un étudiant lors de ce semestre
 				$data = $Scodoc->getStudentAbsences($semestre, $etudiant);
-				return Absences::scoAbsDataToPasserelle($data, false);
+                if ($etudiant == "42415617") {
+                    $modules = $Scodoc->modules($semestre);
+                } else {
+                    $module = '';
+                }
+				$data = Absences::scoAbsDataToPasserelle($data, false, $modules);
+                return $data;
 			}
 		}
 
-		private static function scoAbsDataToPasserelle($data, $groupNip) {
+		private static function scoAbsDataToPasserelle($data, $groupNip, $modules = '') {
+            if ($modules != '') {
+                $dict = array();
+                foreach ($modules['modules'] as $module) {
+                    $dict[$module['id']] = $module['titre'];
+                }
+                foreach ($modules['saes'] as $module) {
+                    $dict[$module['id']] = $module['titre'];
+                }
+            }
 			$output = [];
 			for($i=0 ; $i<count($data) ; $i++){
 
@@ -131,6 +165,11 @@
 				for($j=0 ; $j<count($data[$i]->justificatifs ?? []) ; $j++) {
 					$idJustif[] = $data[$i]->justificatifs[$j]->justif_id;
 				}
+
+                $moduleimpl_id = $data[$i]->moduleimpl_id;
+                $nom = $dict[$moduleimpl_id] ? $dict[$moduleimpl_id]: '';
+
+
 				$temp = [
 					'idAbs' => $data[$i]->assiduite_id,
 					'idJustif' => $idJustif,
@@ -140,6 +179,7 @@
 					'justifie' => $data[$i]->est_just,
 					'enseignant' => $data[$i]->external_data->enseignant ?? $data[$i]->user_name ?? 'Non défini',
 					'matiereComplet' => $data[$i]->moduleimpl_id ?? 'Non défini',
+                    'nomMatiere' => $nom,
 					'dateFin' => date('Y-m-d', $timestampFin)
 				];
 
