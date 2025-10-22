@@ -455,9 +455,13 @@
 				dep = data.relevé.etudiant.dept_acronym || data.relevé.etudiant.photo_url.split("/")[2];
 				if(data.relevé.publie == false){
 					if (absence_only(dep)) {
-						document.querySelector(".show_notes").style.display = "none";
+                        document.querySelector(".show_notes").style.display = "none";
                         document.querySelector("header h1").innerHTML = "Relevé d'absences";
                         document.querySelector("#notes").innerHTML = "absences";
+                    } else if (dep == "InfoCom") {
+                        // console.log(dep);
+                        document.querySelector("header h1").innerHTML = "Notes et absences";
+                    //     document.querySelector(".sectionUe").style.display = "none";
 					} else {
 						document.querySelector(".releve").innerHTML = "<h2 style='background: #90c;'>" + data.relevé.message + "</h2>";
 					}
@@ -606,7 +610,7 @@
 					<div class=entete>Date</div> 
 					<div class=entete>Heures</div>
 					<div class=entete>Matière</div>
-					<div class=entete>Enseignant</div>
+					<div class=entete>Saisie</div>
 					<div class=entete>Statut</div>
 				` + output;
 
