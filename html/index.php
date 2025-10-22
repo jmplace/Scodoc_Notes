@@ -509,8 +509,7 @@
 					styles.innerText = `<?php include("$path/config/releve-but-local.css"); ?>`;
 					releve.shadowRoot.appendChild(styles);
 					<?php } ?>
-					
-					if(!document.body.classList.contains("personnel")){
+		       			if(!document.body.classList.contains("personnel")){
 						document.querySelector(".nom").innerText = data.relevé.etudiant.prenom.toLowerCase();
 						releve.shadowRoot.querySelector(".studentPic").src = "services/data.php?q=getStudentPic";
 					} else {
@@ -523,7 +522,6 @@
 						document.querySelector("releve-dut").hidePDF = false;
 					<?php } ?>
 				}
-
 				// Récupération et affichage du message département
 				let message = await fetchData("getReportPageMessage&dep=" + dep);
 				if(message.message) {

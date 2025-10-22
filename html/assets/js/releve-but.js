@@ -141,7 +141,7 @@ class releveBUT extends HTMLElement {
 		<!--------------------------->
 		<!-- Synthèse              -->
 		<!--------------------------->
-		<section class="sectionUe">
+		<section id="sectionUe">
 			<div>
 				<div>
 					<h2>Synthèse</h2>
